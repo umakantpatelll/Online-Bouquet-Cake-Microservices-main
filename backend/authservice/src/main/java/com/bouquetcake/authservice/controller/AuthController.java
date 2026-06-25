@@ -13,6 +13,7 @@ import com.bouquetcake.authservice.dto.response.AuthResponse;
 import com.bouquetcake.authservice.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +26,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<AuthResponse>> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
         AuthResponse response = authService.register(request);
         ApiResponse<AuthResponse> apiResponse = ApiResponse.<AuthResponse>builder()
                 .success(true)
@@ -37,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
         ApiResponse<AuthResponse> apiResponse = ApiResponse.<AuthResponse>builder()
                 .success(true)
