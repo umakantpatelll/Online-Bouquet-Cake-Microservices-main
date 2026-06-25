@@ -10,6 +10,7 @@ import com.bouquetcake.deliveryservice.service.DeliveryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<DeliveryResponse>> createDelivery(@RequestBody CreateDeliveryRequest request) {
+    public ResponseEntity<ApiResponse<DeliveryResponse>> createDelivery(@Valid @RequestBody CreateDeliveryRequest request) {
         DeliveryResponse response = deliveryService.createDelivery(request);
         ApiResponse<DeliveryResponse> apiResponse = ApiResponse.<DeliveryResponse>builder()
                 .success(true)
@@ -61,7 +62,7 @@ public class DeliveryController {
     @PutMapping("/{id}/status")
     public ResponseEntity<ApiResponse<DeliveryResponse>> updateStatus(
             @PathVariable Long id,
-            @RequestBody UpdateDeliveryStatusRequest request
+            @Valid @RequestBody UpdateDeliveryStatusRequest request
     ) {
         DeliveryResponse response = deliveryService.updateStatus(id, request.getStatus());
         ApiResponse<DeliveryResponse> apiResponse = ApiResponse.<DeliveryResponse>builder()
