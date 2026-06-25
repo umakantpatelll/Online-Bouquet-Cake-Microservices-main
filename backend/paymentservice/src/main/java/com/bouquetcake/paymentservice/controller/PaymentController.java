@@ -8,6 +8,7 @@ import com.bouquetcake.paymentservice.services.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +22,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PaymentResponse>> makePayment(@RequestBody CreatePaymentRequest request) {
+    public ResponseEntity<ApiResponse<PaymentResponse>> makePayment(@Valid @RequestBody CreatePaymentRequest request) {
         PaymentResponse response = paymentService.makePayment(request);
         ApiResponse<PaymentResponse> apiResponse = ApiResponse.<PaymentResponse>builder()
                 .success(true)
