@@ -8,6 +8,7 @@ import com.bouquetcake.orderservice.mapper.OrderMapper;
 import com.bouquetcake.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.bouquetcake.orderservice.exception.OrderNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse getOrderById(Long id) {
         CustomerOrder order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + id));
         return orderMapper.toResponse(order);
     }
 
@@ -57,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse updateOrderStatus(Long id, OrderStatus status) {
         CustomerOrder order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + id));
         order.setStatus(status);
         CustomerOrder updatedOrder = orderRepository.save(order);
         return orderMapper.toResponse(updatedOrder);
@@ -66,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String cancelOrder(Long id) {
         CustomerOrder order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + id));
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
         return "Order cancelled successfully";
