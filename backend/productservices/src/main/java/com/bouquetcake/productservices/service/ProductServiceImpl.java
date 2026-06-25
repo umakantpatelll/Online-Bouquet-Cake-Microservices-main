@@ -13,6 +13,7 @@ import com.bouquetcake.productservices.entity.Category;
 import com.bouquetcake.productservices.entity.Product;
 import com.bouquetcake.productservices.mapper.ProductMapper;
 import com.bouquetcake.productservices.repository.ProductRepository;
+import com.bouquetcake.productservices.exception.ProductNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
         return productMapper.toResponse(product);
     }
 
@@ -63,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse updateProduct(Long id, UpdateProductRequest request) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
 
         product.setName(request.getName());
         product.setDescription(request.getDescription());
@@ -79,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public String deleteProduct(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
         productRepository.delete(product);
         return "Product deleted successfully";
     }
