@@ -7,6 +7,7 @@ import com.bouquetcake.orderservice.dto.response.OrderResponse;
 import com.bouquetcake.orderservice.entity.OrderStatus;
 import com.bouquetcake.orderservice.service.OrderService;
 import java.util.List;
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<OrderResponse>> placeOrder(@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<ApiResponse<OrderResponse>> placeOrder(@Valid @RequestBody CreateOrderRequest request) {
         OrderResponse response = orderService.placeOrder(request);
         ApiResponse<OrderResponse> apiResponse = ApiResponse.<OrderResponse>builder()
                 .success(true)
@@ -72,7 +73,7 @@ public class OrderController {
     @PutMapping("/{id}/status")
     public ResponseEntity<ApiResponse<OrderResponse>> updateOrderStatus(
             @PathVariable Long id,
-            @RequestBody UpdateOrderStatusRequest request) {
+            @Valid @RequestBody UpdateOrderStatusRequest request) {
 
         OrderResponse response = orderService.updateOrderStatus(id, request.getStatus());
         ApiResponse<OrderResponse> apiResponse = ApiResponse.<OrderResponse>builder()
