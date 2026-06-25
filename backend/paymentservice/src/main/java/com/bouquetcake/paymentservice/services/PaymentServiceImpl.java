@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.stream.Collectors;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import com.bouquetcake.paymentservice.exception.PaymentNotFoundException;
+import com.bouquetcake.paymentservice.exception.PaymentFailedException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponse makePayment(CreatePaymentRequest request) {
+        if (request.getAmount() > 5000.0) {
+            throw new PaymentFailedException("Payment failed: Transaction limit exceeded");
+        }
         Payment payment = Payment.builder()
                 .orderId(request.getOrderId())
                 .amount(request.getAmount())
@@ -41,7 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponse getPaymentById(Long id) {
         Payment payment = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + id));
         return paymentMapper.toResponse(payment);
     }
 }
