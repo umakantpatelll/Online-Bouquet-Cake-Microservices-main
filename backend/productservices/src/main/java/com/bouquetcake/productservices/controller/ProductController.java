@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/products")
@@ -22,7 +23,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductResponse>> addProduct(@RequestBody CreateProductRequest request) {
+    public ResponseEntity<ApiResponse<ProductResponse>> addProduct(@Valid @RequestBody CreateProductRequest request) {
         ProductResponse response = productService.addProduct(request);
         ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
                 .success(true)
@@ -70,7 +71,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest request) {
+    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest request) {
         ProductResponse response = productService.updateProduct(id, request);
         ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
                 .success(true)
