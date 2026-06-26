@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.stream.Collectors;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import com.bouquetcake.deliveryservice.exception.DeliveryNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -40,14 +41,14 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public DeliveryResponse getDeliveryById(Long id) {
         Delivery delivery = deliveryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Delivery not found"));
+                .orElseThrow(() -> new DeliveryNotFoundException("Delivery not found with id: " + id));
         return deliveryMapper.toResponse(delivery);
     }
 
     @Override
     public DeliveryResponse updateStatus(Long id, DeliveryStatus status) {
         Delivery delivery = deliveryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Delivery not found"));
+                .orElseThrow(() -> new DeliveryNotFoundException("Delivery not found with id: " + id));
         delivery.setStatus(status);
         Delivery updatedDelivery = deliveryRepository.save(delivery);
         return deliveryMapper.toResponse(updatedDelivery);
