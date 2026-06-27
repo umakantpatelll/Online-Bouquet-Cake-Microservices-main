@@ -1,0 +1,86 @@
+<div class="mb-5">
+  <h1 class="fw-bold font-outfit text-main mb-1">Real-Time Dispatch Console</h1>
+  <p class="text-muted-custom">Track courier assignments, simulate status advances, and review logistics ETA values.</p>
+</div>
+
+<!-- Selection Dropdown Bar -->
+<div class="card card-theme p-4 border-0 shadow-sm mb-4">
+  <div class="row align-items-center g-3">
+    <div class="col-md-5">
+      <label class="form-label fw-bold text-main font-outfit small">Select Active Dispatch Shipment:</label>
+      <select [ngModel]="selectedOrderId()" (ngModelChange)="selectOrder($event)" class="form-select font-outfit">
+        @for (rec of trackingRecords(); track rec.orderId) {
+          <option [value]="rec.orderId">Order #{{ rec.orderId }} - {{ rec.customerName }} ({{ rec.status }})</option>
+        }
+      </select>
+    </div>
+    
+    <div class="col-md-7 text-md-end d-flex gap-2 justify-content-md-end">
+      <button (click)="simulateNextStep()" class="btn custom-btn font-outfit py-2.5 px-4 shadow-sm" [disabled]="activeOrder()?.status === 'DELIVERED'">
+        Advance Status Milestone
+      </button>
+      <button (click)="resetSimulation()" class="btn btn-outline-secondary font-outfit py-2.5 px-3 rounded shadow-sm">
+        Reset Simulation
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (activeOrder()) {
+  <!-- Active Tracking Panels -->
+  <div class="row g-4">
+    
+    <!-- Left panel: Timeline progress -->
+    <div class="col-lg-8">
+      <div class="card card-theme p-4 border-0 shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+          <h3 class="h5 fw-bold text-main font-outfit mb-0">Delivery Timeline Progress</h3>
+          <app-order-status-chip [status]="activeOrder()!.status"></app-order-status-chip>
+        </div>
+        
+        <!-- Order timeline wrapper -->
+        <app-order-timeline [activeStatus]="activeOrder()!.status"></app-order-timeline>
+      </div>
+    </div>
+
+    <!-- Right panel: Logistics meta details -->
+    <div class="col-lg-4">
+      <div class="card card-theme p-4 border-0 shadow-sm h-100 d-flex flex-column gap-3.5">
+        <h3 class="h5 fw-bold text-main font-outfit mb-0 border-bottom pb-2">Logistics Summary</h3>
+        
+        <div class="small text-muted-custom d-flex flex-column gap-3">
+          <div>
+            <span class="fw-semibold text-dark d-block mb-1">Customer:</span>
+            <span class="text-main fw-semibold fs-6">{{ activeOrder()!.customerName }}</span>
+          </div>
+
+          <div>
+            <span class="fw-semibold text-dark d-block mb-1">Delivery Address:</span>
+            <p class="mb-0 text-main">{{ activeOrder()!.deliveryAddress }}</p>
+          </div>
+
+          <div>
+            <span class="fw-semibold text-dark d-block mb-1">Courier Assigned:</span>
+            <span class="badge bg-light border text-dark text-uppercase px-2.5 py-1.5 fw-semibold font-outfit">{{ activeOrder()!.driverName }}</span>
+          </div>
+
+          <div class="border-top pt-3 mt-2">
+            <span class="fw-semibold text-dark d-block mb-1">Estimated Arrival Time:</span>
+            @if (activeOrder()!.etaMins > 0) {
+              <div class="d-flex align-items-center gap-2 text-warning fw-bold fs-5">
+                <span class="material-icons animate-pulse">timer</span>
+                <span class="font-outfit">{{ activeOrder()!.etaMins }} mins remaining</span>
+              </div>
+            } @else {
+              <div class="d-flex align-items-center gap-2 text-success fw-bold fs-5">
+                <span class="material-icons">task_alt</span>
+                <span class="font-outfit">Package Handed Over</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+}

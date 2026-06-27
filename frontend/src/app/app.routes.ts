@@ -125,6 +125,45 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'operations',
+    loadComponent: () => import('./features/operations/operations-layout.component').then(m => m.OperationsLayoutComponent),
+    canActivate: [authGuard, roleGuard],
+    data: { expectedRole: 'ROLE_ADMIN' },
+    title: 'Operations Center',
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/operations/dashboard/operations-dashboard.component').then(m => m.OperationsDashboardComponent),
+        title: 'Operations Dashboard'
+      },
+      {
+        path: 'tracking',
+        loadComponent: () => import('./features/operations/tracking/realtime-tracking.component').then(m => m.RealtimeTrackingComponent),
+        title: 'Live Shipment Tracking'
+      },
+      {
+        path: 'kafka',
+        loadComponent: () => import('./features/operations/kafka/kafka-visualization.component').then(m => m.KafkaVisualizationComponent),
+        title: 'Kafka Event Stream'
+      },
+      {
+        path: 'audit',
+        loadComponent: () => import('./features/operations/audit/audit-logs.component').then(m => m.AuditLogsComponent),
+        title: 'Compliance Audit Logs'
+      },
+      {
+        path: 'reports',
+        loadComponent: () => import('./features/operations/reports/reports.component').then(m => m.ReportsComponent),
+        title: 'Business Reports'
+      }
+    ]
+  },
+  {
     path: 'unauthorized',
     loadComponent: () => import('./shared/components/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent),
     title: 'Unauthorized Access'

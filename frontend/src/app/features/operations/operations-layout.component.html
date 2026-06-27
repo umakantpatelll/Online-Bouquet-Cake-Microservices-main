@@ -1,0 +1,47 @@
+<div class="d-flex min-vh-100 flex-column flex-md-row">
+  
+  <!-- Sidebar Panel -->
+  <aside class="bg-indigo text-white p-3 d-flex flex-column" style="min-width: 250px;">
+    <div class="text-center py-4 border-bottom border-indigo-subtle mb-4">
+      <span class="material-icons display-6 text-warning mb-2">hub</span>
+      <h2 class="h5 fw-bold font-outfit mb-0">Operations Center</h2>
+      <span class="badge bg-warning-subtle text-warning px-2.5 py-1 text-uppercase text-xs mt-2 font-outfit">Live Console</span>
+    </div>
+
+    <!-- Navigation links -->
+    <nav class="d-flex flex-column gap-2 flex-grow-1">
+      <a routerLink="/operations/dashboard" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">analytics</span>
+        <span class="font-outfit text-sm">Dashboard Widgets</span>
+      </a>
+      <a routerLink="/operations/tracking" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">track_changes</span>
+        <span class="font-outfit text-sm">Live Order Tracking</span>
+      </a>
+      <a routerLink="/operations/kafka" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">dns</span>
+        <span class="font-outfit text-sm">Kafka Event Stream</span>
+      </a>
+      <a routerLink="/operations/audit" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">assignment_turned_in</span>
+        <span class="font-outfit text-sm">System Audit Logs</span>
+      </a>
+      <a routerLink="/operations/reports" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">file_download</span>
+        <span class="font-outfit text-sm">Business Reports</span>
+      </a>
+    </nav>
+    
+    <div class="border-top border-indigo-subtle pt-3 mt-auto">
+      <a routerLink="/" class="btn btn-outline-light btn-sm w-100 font-outfit py-2">
+        <i class="bi bi-house me-1"></i> Customer View
+      </a>
+    </div>
+  </aside>
+
+  <!-- Child viewport container -->
+  <main class="flex-grow-1 bg-light p-4 p-md-5 overflow-auto">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

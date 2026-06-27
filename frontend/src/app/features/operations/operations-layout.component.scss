@@ -1,0 +1,31 @@
+.bg-indigo {
+  background-color: #2b2d42 !important;
+}
+
+.border-indigo-subtle {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.text-xs {
+  font-size: 0.72rem;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+.nav-sidebar-link {
+  transition: all var(--transition-speed) ease;
+  
+  &:hover {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  &.active-link {
+    color: white !important;
+    background-color: #ffb703 !important;
+    color: #023047 !important;
+    font-weight: 600;
+  }
+}

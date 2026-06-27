@@ -1,0 +1,61 @@
+<!-- Loading Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="false">
+  <p style="color: white; font-weight: 500;">Compiling Data Sheet...</p>
+</ngx-spinner>
+
+<div class="mb-5">
+  <h1 class="fw-bold font-outfit text-main mb-1">Business Reports Center</h1>
+  <p class="text-muted-custom">Export ledger logs, sales data sheets, and inventory margins directly into CSV documents.</p>
+</div>
+
+<div class="row g-4">
+  
+  <!-- Sales Report Card -->
+  <div class="col-md-4">
+    <div class="card card-theme p-4 border-0 shadow-sm text-center h-100 d-flex flex-column align-items-center justify-content-between">
+      <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 d-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+        <span class="material-icons fs-2">receipt</span>
+      </div>
+      <div class="mb-4">
+        <h4 class="fw-bold font-outfit text-main mb-2">Order Sales Report</h4>
+        <p class="text-muted-custom small mb-0">Contains Order ID, customer mapping, dates, totalPrice values, and delivery status flags.</p>
+      </div>
+      <button (click)="exportSalesReport()" class="btn custom-btn w-100 font-outfit">
+        <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export Sales CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Inventory Report Card -->
+  <div class="col-md-4">
+    <div class="card card-theme p-4 border-0 shadow-sm text-center h-100 d-flex flex-column align-items-center justify-content-between">
+      <div class="bg-info bg-opacity-10 text-info rounded-circle p-3 d-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+        <span class="material-icons fs-2">inventory_2</span>
+      </div>
+      <div class="mb-4">
+        <h4 class="fw-bold font-outfit text-main mb-2">Inventory Stock Report</h4>
+        <p class="text-muted-custom small mb-0">Contains product codes, title names, category classifications, and current store stock counts.</p>
+      </div>
+      <button (click)="exportInventoryReport()" class="btn custom-btn w-100 font-outfit">
+        <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export Inventory CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Revenue Report Card -->
+  <div class="col-md-4">
+    <div class="card card-theme p-4 border-0 shadow-sm text-center h-100 d-flex flex-column align-items-center justify-content-between">
+      <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 d-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+        <span class="material-icons fs-2">payments</span>
+      </div>
+      <div class="mb-4">
+        <h4 class="fw-bold font-outfit text-main mb-2">Monthly Revenue ledger</h4>
+        <p class="text-muted-custom small mb-0">Contains accounting periods, gross revenue margins, taxes collected (5%), and net profit details.</p>
+      </div>
+      <button (click)="exportRevenueReport()" class="btn custom-btn w-100 font-outfit">
+        <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export Revenue CSV
+      </button>
+    </div>
+  </div>
+
+</div>

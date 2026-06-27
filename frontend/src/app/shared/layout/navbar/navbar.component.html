@@ -24,6 +24,7 @@
       <!-- Admin Only Links -->
       <ng-container *ngIf="(authService.isLoggedIn$ | async) && (authService.userRole$ | async) === 'ROLE_ADMIN'">
         <a routerLink="/admin" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Admin</a>
+        <a routerLink="/operations" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Operations</a>
       </ng-container>
 
       <!-- Common Logged In Link -->

@@ -1,0 +1,54 @@
+<div class="mb-4">
+  <h1 class="fw-bold font-outfit text-main mb-1">Kafka Event Telemetry</h1>
+  <p class="text-muted-custom">Monitor live message broker transactions, correlation IDs, and JSON payloads.</p>
+</div>
+
+<!-- Controls Bar -->
+<div class="card card-theme p-3 border-0 shadow-sm mb-4">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div class="d-flex gap-2">
+      <button (click)="togglePause()" class="btn btn-sm font-outfit px-3 rounded-pill" [ngClass]="isPaused() ? 'btn-success' : 'btn-warning'">
+        {{ isPaused() ? 'Resume Telemetry' : 'Pause Telemetry' }}
+      </button>
+      <button (click)="clearConsole()" class="btn btn-sm btn-outline-secondary font-outfit px-3 rounded-pill">
+        Clear Terminal
+      </button>
+    </div>
+    
+    <button (click)="injectOrderCreatedEvent()" class="btn btn-sm btn-primary font-outfit px-3 rounded-pill">
+      Inject OrderCreated Event
+    </button>
+  </div>
+</div>
+
+<!-- Terminal Log -->
+<div class="card bg-dark text-white p-4 border-0 shadow-lg font-monospace overflow-auto console-container" appAutoScroll style="height: 480px; font-size: 0.88rem; line-height: 1.5;">
+  
+  <div class="text-secondary border-bottom border-secondary pb-2 mb-3">
+    <span>SYSTEM LOG CONSOLE: Listening to Kafka broker event stream...</span>
+  </div>
+
+  @if (eventsList().length === 0) {
+    <div class="text-center text-muted py-5">
+      <span>Console buffer is empty. Telemetry will resume shortly.</span>
+    </div>
+  } @else {
+    @for (evt of eventsList(); track evt.id) {
+      <div class="mb-2 log-row">
+        <span class="text-secondary">[{{ evt.timestamp | date:'HH:mm:ss.SSS' }}]</span>
+        <span class="ms-2 badge text-xs rounded-pill" [ngClass]="{
+          'bg-success': evt.eventType === 'OrderCreated',
+          'bg-info text-dark': evt.eventType === 'PaymentCompleted',
+          'bg-warning text-dark': evt.eventType === 'DeliveryCreated',
+          'bg-danger': evt.eventType === 'NotificationSent'
+        }">
+          {{ evt.eventType }}
+        </span>
+        <span class="text-warning ms-2">corrId={{ evt.correlationId }}</span>
+        <span class="text-white-50 ms-2">msgId={{ evt.id }}</span>
+        <span class="text-success ms-2 font-monospace">{{ evt.payload }}</span>
+      </div>
+    }
+  }
+
+</div>
