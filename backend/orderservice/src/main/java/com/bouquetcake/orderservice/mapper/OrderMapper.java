@@ -1,31 +1,40 @@
 package com.bouquetcake.orderservice.mapper;
 
+import com.bouquetcake.orderservice.dto.response.DeliveryResponse;
+import com.bouquetcake.orderservice.dto.response.OrderItemResponse;
 import com.bouquetcake.orderservice.dto.response.OrderResponse;
 import com.bouquetcake.orderservice.dto.response.OrderSummaryResponse;
+import com.bouquetcake.orderservice.dto.response.PaymentResponse;
+import com.bouquetcake.orderservice.dto.response.ProductResponse;
+import com.bouquetcake.orderservice.dto.response.UserResponse;
 import com.bouquetcake.orderservice.entity.CustomerOrder;
-import org.springframework.stereotype.Component;
+import com.bouquetcake.orderservice.entity.Delivery;
+import com.bouquetcake.orderservice.entity.OrderItem;
+import com.bouquetcake.orderservice.entity.Payment;
+import com.bouquetcake.orderservice.entity.Product;
+import com.bouquetcake.orderservice.entity.User;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class OrderMapper {
+import java.util.List;
 
-    public OrderResponse toResponse(CustomerOrder order) {
-        if (order == null) return null;
-        return OrderResponse.builder()
-                .id(order.getId())
-                .userId(order.getUserId())
-                .totalAmount(order.getTotalAmount())
-                .status(order.getStatus())
-                .orderDate(order.getOrderDate())
-                .build();
-    }
+@Mapper(componentModel = "spring")
+public interface OrderMapper {
 
-    public OrderSummaryResponse toSummaryResponse(CustomerOrder order) {
-        if (order == null) return null;
-        return OrderSummaryResponse.builder()
-                .id(order.getId())
-                .totalAmount(order.getTotalAmount())
-                .status(order.getStatus())
-                .orderDate(order.getOrderDate())
-                .build();
-    }
+    OrderResponse toResponse(CustomerOrder order);
+
+    @Mapping(target = "userId", source = "user.id")
+    OrderSummaryResponse toSummaryResponse(CustomerOrder order);
+
+    List<OrderSummaryResponse> toSummaryResponseList(List<CustomerOrder> orders);
+
+    UserResponse toUserResponse(User user);
+
+    ProductResponse toProductResponse(Product product);
+
+    OrderItemResponse toOrderItemResponse(OrderItem item);
+
+    PaymentResponse toPaymentResponse(Payment payment);
+
+    DeliveryResponse toDeliveryResponse(Delivery delivery);
 }

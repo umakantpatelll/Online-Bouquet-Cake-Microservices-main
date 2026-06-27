@@ -1,0 +1,5 @@
+CREATE DATABASE IF NOT EXISTS bouquet_auth_db;
+CREATE DATABASE IF NOT EXISTS bouquet_product_db;
+CREATE DATABASE IF NOT EXISTS bouquet_order_db;
+CREATE DATABASE IF NOT EXISTS bouquet_payment_db;
+CREATE DATABASE IF NOT EXISTS bouquet_delivery_db;

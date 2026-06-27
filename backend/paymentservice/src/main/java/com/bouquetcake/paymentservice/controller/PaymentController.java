@@ -7,6 +7,7 @@ import com.bouquetcake.paymentservice.services.PaymentService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -22,6 +23,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseEntity<ApiResponse<PaymentResponse>> makePayment(@Valid @RequestBody CreatePaymentRequest request) {
         PaymentResponse response = paymentService.makePayment(request);
         ApiResponse<PaymentResponse> apiResponse = ApiResponse.<PaymentResponse>builder()
@@ -34,6 +36,7 @@ public class PaymentController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<List<PaymentResponse>>> getAllPayments() {
         List<PaymentResponse> response = paymentService.getAllPayments();
         ApiResponse<List<PaymentResponse>> apiResponse = ApiResponse.<List<PaymentResponse>>builder()
@@ -46,6 +49,7 @@ public class PaymentController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     public ResponseEntity<ApiResponse<PaymentResponse>> getPaymentById(@PathVariable Long id) {
         PaymentResponse response = paymentService.getPaymentById(id);
         ApiResponse<PaymentResponse> apiResponse = ApiResponse.<PaymentResponse>builder()

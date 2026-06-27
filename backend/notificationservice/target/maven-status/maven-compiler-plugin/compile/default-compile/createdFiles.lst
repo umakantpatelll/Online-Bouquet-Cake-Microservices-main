@@ -1,0 +1,4 @@
+com/bouquetcake/notificationservice/event/DeliveryCreatedEvent$DeliveryCreatedEventBuilder.class
+com/bouquetcake/notificationservice/event/DeliveryCreatedEvent.class
+com/bouquetcake/notificationservice/event/NotificationKafkaConsumer.class
+com/bouquetcake/notificationservice/NotificationserviceApplication.class

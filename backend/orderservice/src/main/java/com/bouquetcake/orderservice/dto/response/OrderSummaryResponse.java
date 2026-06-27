@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderSummaryResponse {
     private Long id;
+    private Long userId;
     private Double totalAmount;
     private OrderStatus status;
     private LocalDateTime orderDate;

@@ -9,6 +9,7 @@ import com.bouquetcake.deliveryservice.service.DeliveryService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -24,6 +25,7 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<DeliveryResponse>> createDelivery(@Valid @RequestBody CreateDeliveryRequest request) {
         DeliveryResponse response = deliveryService.createDelivery(request);
         ApiResponse<DeliveryResponse> apiResponse = ApiResponse.<DeliveryResponse>builder()
@@ -36,6 +38,7 @@ public class DeliveryController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<List<DeliveryResponse>>> getAllDeliveries() {
         List<DeliveryResponse> response = deliveryService.getAllDeliveries();
         ApiResponse<List<DeliveryResponse>> apiResponse = ApiResponse.<List<DeliveryResponse>>builder()
@@ -48,6 +51,7 @@ public class DeliveryController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DELIVERY')")
     public ResponseEntity<ApiResponse<DeliveryResponse>> getDeliveryById(@PathVariable Long id) {
         DeliveryResponse response = deliveryService.getDeliveryById(id);
         ApiResponse<DeliveryResponse> apiResponse = ApiResponse.<DeliveryResponse>builder()
@@ -60,6 +64,7 @@ public class DeliveryController {
     }
 
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DELIVERY')")
     public ResponseEntity<ApiResponse<DeliveryResponse>> updateStatus(
             @PathVariable Long id,
             @Valid @RequestBody UpdateDeliveryStatusRequest request

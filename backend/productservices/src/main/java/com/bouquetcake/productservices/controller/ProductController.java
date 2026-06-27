@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/products")
@@ -23,6 +24,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<ProductResponse>> addProduct(@Valid @RequestBody CreateProductRequest request) {
         ProductResponse response = productService.addProduct(request);
         ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
@@ -71,6 +73,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest request) {
         ProductResponse response = productService.updateProduct(id, request);
         ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
@@ -83,6 +86,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable Long id) {
         String result = productService.deleteProduct(id);
         ApiResponse<String> apiResponse = ApiResponse.<String>builder()

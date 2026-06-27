@@ -1,5 +1,9 @@
 package com.bouquetcake.orderservice.dto.request;
 
+import java.util.List;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -17,7 +21,7 @@ public class CreateOrderRequest {
     @Positive(message = "User ID must be positive")
     private Long userId;
 
-    @NotNull(message = "Total amount is required")
-    @Positive(message = "Total amount must be positive")
-    private Double totalAmount;
+    @NotEmpty(message = "Order items must not be empty")
+    @Valid
+    private List<OrderItemRequest> items;
 }
