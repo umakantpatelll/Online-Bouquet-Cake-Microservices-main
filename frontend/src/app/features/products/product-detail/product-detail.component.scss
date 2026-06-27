@@ -1,0 +1,25 @@
+.text-primary-color {
+  color: var(--primary-color) !important;
+}
+
+.text-muted-custom {
+  color: var(--text-muted) !important;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.img-container {
+  overflow: hidden;
+  img {
+    transition: transform 0.5s ease;
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+}

@@ -1,0 +1,24 @@
+.text-primary-color {
+  color: var(--primary-color) !important;
+}
+
+.img-wrapper {
+  overflow: hidden;
+  img {
+    transition: transform var(--transition-speed) ease;
+  }
+}
+
+:host:hover {
+  .img-wrapper img {
+    transform: scale(1.05);
+  }
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+.text-xs {
+  font-size: 0.72rem;
+}

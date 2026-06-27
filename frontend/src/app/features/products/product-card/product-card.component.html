@@ -1,0 +1,55 @@
+<div class="card card-theme hover-scale border-0 shadow-sm overflow-hidden h-100" appHoverCard>
+  
+  <!-- Image Showcase -->
+  <div class="img-wrapper position-relative d-flex align-items-center justify-content-center bg-secondary bg-opacity-25" style="height: 220px;">
+    @if (product.imageUrl) {
+      <img [src]="product.imageUrl" [alt]="product.name" class="img-fluid object-fit-cover w-100 h-100" appLazyImage>
+    } @else {
+      <span class="material-icons display-1 opacity-50 text-secondary">
+        {{ product.category === 'CAKE' ? 'cake' : (product.category === 'BOUQUET' ? 'local_florist' : 'card_giftcard') }}
+      </span>
+    }
+  </div>
+
+  <!-- Card Details Body -->
+  <div class="card-body p-4 d-flex flex-column">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <!-- Category Badge with Pipe resolved styling -->
+      <span class="badge rounded-pill border px-3 py-1.5 fw-semibold text-uppercase font-outfit text-xs" [ngClass]="product.category | categoryColor">
+        {{ product.category }}
+      </span>
+      
+      <!-- Inventory status -->
+      <span class="small fw-semibold" [ngClass]="{
+        'text-danger': product.stock === 0,
+        'text-warning': product.stock > 0 && product.stock < 5,
+        'text-success': product.stock >= 5
+      }">
+        {{ product.stock | stockStatus }}
+      </span>
+    </div>
+
+    <!-- Product Name with Live Highlight directive -->
+    <h3 class="h5 card-title fw-bold text-main mb-2" [appHighlight]="product.name" [searchKeyword]="searchKeyword"></h3>
+    
+    <!-- Short Description -->
+    <p class="text-muted-custom small flex-grow-1 mb-3">{{ product.description }}</p>
+
+    <!-- Pricing and Details Trigger -->
+    <div class="border-top pt-3 mt-auto d-flex justify-content-between align-items-center">
+      <div class="d-flex flex-column">
+        <!-- Mock Promo slashed price comparison -->
+        <span class="text-muted text-decoration-line-through small" style="font-size: 0.85rem;">
+          ₹{{ product.price | number:'1.2-2' }}
+        </span>
+        <span class="fs-4 fw-bold text-primary-color">
+          ₹{{ product.price | priceDiscount:10 | number:'1.2-2' }}
+        </span>
+      </div>
+
+      <a [routerLink]="['/products', product.id]" class="btn custom-btn btn-sm">
+        Details
+      </a>
+    </div>
+  </div>
+</div>

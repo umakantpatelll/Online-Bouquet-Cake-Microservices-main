@@ -1,0 +1,94 @@
+<!-- Loading Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="false">
+  <p style="color: white; font-weight: 500;">Fetching Details...</p>
+</ngx-spinner>
+
+<div class="container py-5">
+  
+  <!-- Dynamic Breadcrumb Trail -->
+  <nav *ngIf="product" aria-label="breadcrumb" class="mb-5">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/" class="text-decoration-none text-muted-custom">Home</a></li>
+      <li class="breadcrumb-item"><a routerLink="/products" class="text-decoration-none text-muted-custom">Products</a></li>
+      <li class="breadcrumb-item active text-main font-outfit" aria-current="page">{{ product.name }}</li>
+    </ol>
+  </nav>
+
+  @if (errorMessage) {
+    <!-- Connection Error Warning Alert -->
+    <div class="alert alert-danger p-5 text-center border-0 shadow-sm rounded-3" role="alert">
+      <span class="material-icons display-4 text-danger mb-2">error_outline</span>
+      <h3 class="fw-bold mb-2">Product Not Found</h3>
+      <p class="mb-4 text-muted-custom">{{ errorMessage }}</p>
+      <div class="d-flex justify-content-center gap-3">
+        <button (click)="retryFetch()" class="btn custom-btn btn-sm px-4">Retry</button>
+        <a routerLink="/products" class="btn custom-btn-outline btn-sm px-4">Back to Catalog</a>
+      </div>
+    </div>
+  } @else {
+    
+    <!-- Split Detail Panel -->
+    @if (product) {
+      <div class="row g-5">
+        
+        <!-- Column 1: Media Panel -->
+        <div class="col-md-6">
+          <div class="img-container d-flex align-items-center justify-content-center bg-secondary bg-opacity-25 rounded-4 shadow-sm border border-light-subtle" style="min-height: 400px; height: 100%;">
+            @if (product.imageUrl) {
+              <img [src]="product.imageUrl" [alt]="product.name" class="img-fluid object-fit-cover rounded-4 w-100 h-100" appLazyImage>
+            } @else {
+              <span class="material-icons display-1 opacity-25 text-secondary" style="font-size: 8rem;">
+                {{ product.category === 'CAKE' ? 'cake' : (product.category === 'BOUQUET' ? 'local_florist' : 'card_giftcard') }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Column 2: Specs & Add-To-Cart controls -->
+        <div class="col-md-6 d-flex flex-column justify-content-center">
+          
+          <!-- Category Indicator badge -->
+          <span class="badge border rounded-pill px-3 py-2 text-uppercase font-outfit text-xs align-self-start mb-3" [ngClass]="product.category | categoryColor">
+            {{ product.category }}
+          </span>
+
+          <!-- Product Name -->
+          <h1 class="display-5 fw-bold font-outfit text-main mb-2">{{ product.name }}</h1>
+
+          <!-- Stock Availability badge -->
+          <div class="mb-4 d-flex align-items-center gap-2">
+            <span class="fw-semibold text-muted-custom small">Availability:</span>
+            <span class="badge px-3 py-2 font-outfit" [ngClass]="{
+              'bg-danger-subtle text-danger': product.stock === 0,
+              'bg-warning-subtle text-warning': product.stock > 0 && product.stock < 5,
+              'bg-success-subtle text-success': product.stock >= 5
+            }">
+              {{ product.stock | stockStatus }}
+            </span>
+          </div>
+
+          <!-- Pricing box -->
+          <div class="mb-4 p-4 rounded-3 card-theme border shadow-sm">
+            <span class="text-muted text-decoration-line-through small d-block mb-1">Regular Price: ₹{{ product.price | number:'1.2-2' }}</span>
+            <span class="fs-2 fw-bold text-primary-color d-inline-block me-2">₹{{ product.price | priceDiscount:10 | number:'1.2-2' }}</span>
+            <span class="badge bg-danger rounded-pill px-2.5 py-1 text-xs">Save 10%</span>
+          </div>
+
+          <!-- Description -->
+          <p class="text-muted-custom lead mb-5 fs-6 lh-lg">{{ product.description }}</p>
+
+          <!-- Core Action buttons -->
+          <div class="d-flex gap-3 flex-wrap">
+            <button class="btn custom-btn px-4 py-3 flex-grow-1 flex-md-grow-0 d-flex align-items-center justify-content-center gap-2" [disabled]="product.stock === 0">
+              <span class="material-icons">shopping_cart</span> Add to Cart
+            </button>
+            <a routerLink="/products" class="btn custom-btn-outline px-4 py-3 flex-grow-1 flex-md-grow-0 text-center">
+              Back to Products
+            </a>
+          </div>
+          
+        </div>
+      </div>
+    }
+  }
+</div>

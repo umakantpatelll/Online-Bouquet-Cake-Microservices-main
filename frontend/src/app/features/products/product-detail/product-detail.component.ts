@@ -1,64 +1,98 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { Subscription, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
+import { ProductService } from '../../../core/services/product.service';
+import { Product } from '../../../core/models/product.model';
+import { PriceDiscountPipe } from '../pipes/price-discount.pipe';
+import { StockStatusPipe } from '../pipes/stock-status.pipe';
+import { CategoryColorPipe } from '../pipes/category-color.pipe';
+import { LazyImageDirective } from '../directives/lazy-image.directive';
 
 /**
  * ProductDetailComponent
  * ----------------------------------------------------
  * Why this file exists:
- * Shows detailed description, rating, stock, and add-to-cart controls for a single product.
+ * Fetches and displays detail profiles for a single catalog cake/bouquet.
+ * 
+ * Routing features used:
+ * - ActivatedRoute: Used to read URL parameters (e.g. products/:id).
+ * 
+ * Performance Optimization:
+ * - ChangeDetectionStrategy.OnPush: UI updates only occur when inputs change 
+ *   or change detector marks check on server replies.
  */
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
-    <div class="container py-5">
-      <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a routerLink="/" class="text-decoration-none text-muted-custom">Home</a></li>
-          <li class="breadcrumb-item"><a routerLink="/products" class="text-decoration-none text-muted-custom">Products</a></li>
-          <li class="breadcrumb-item active" aria-current="page">{{ product().name }}</li>
-        </ol>
-      </nav>
-
-      <div class="row g-5">
-        <div class="col-md-6">
-          <div class="d-flex align-items-center justify-content-center text-white bg-secondary bg-opacity-25 rounded" style="height: 400px;">
-            <span class="material-icons display-1 opacity-50" style="font-size: 8rem;">
-              {{ product().category === 'CAKE' ? 'cake' : 'local_florist' }}
-            </span>
-          </div>
-        </div>
-        <div class="col-md-6 d-flex flex-column justify-content-center">
-          <span class="badge bg-light text-dark align-self-start mb-2 px-3 py-2 text-uppercase fw-semibold">{{ product().category }}</span>
-          <h1 class="fw-bold font-outfit text-main mb-3">{{ product().name }}</h1>
-          <h2 class="fs-2 fw-bold text-primary-color mb-4">₹{{ product().price | number:'1.2-2' }}</h2>
-          <p class="text-muted-custom mb-4">{{ product().description }}</p>
-          
-          <div class="mb-4 d-flex align-items-center gap-3">
-            <span class="fw-semibold">Stock Status:</span>
-            <span class="badge bg-success-subtle text-success px-3 py-2">In Stock ({{ product().stock }} available)</span>
-          </div>
-
-          <div class="d-flex gap-3">
-            <button class="btn custom-btn px-4 py-3"><i class="bi bi-cart-plus-fill me-2"></i> Add to Cart</button>
-            <a routerLink="/products" class="btn custom-btn-outline px-4 py-3">Back to Catalog</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  `
+  imports: [
+    CommonModule,
+    RouterModule,
+    PriceDiscountPipe,
+    StockStatusPipe,
+    CategoryColorPipe,
+    LazyImageDirective,
+    NgxSpinnerModule
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './product-detail.component.html',
+  styleUrls: ['./product-detail.component.scss']
 })
-export class ProductDetailComponent {
-  product = signal({
-    id: 1,
-    name: 'Chocolate Truffle Cake',
-    category: 'CAKE',
-    price: 499.00,
-    description: 'Our signature chocolate truffle cake features moist chocolate sponge cake layered with rich dark chocolate ganache, decorated with chocolate shards.',
-    stock: 12
-  });
+export class ProductDetailComponent implements OnInit, OnDestroy {
+  private productService = inject(ProductService);
+  private route = inject(ActivatedRoute);
+  private spinner = inject(NgxSpinnerService);
+  private cdr = inject(ChangeDetectorRef);
 
-  constructor(private route: ActivatedRoute) {}
+  product: Product | null = null;
+  errorMessage: string | null = null;
+  
+  private paramSub?: Subscription;
+
+  ngOnInit(): void {
+    // Listen to parameter map stream to support parameter changes
+    this.paramSub = this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam) {
+        const id = +idParam;
+        this.fetchProductDetails(id);
+      }
+    });
+  }
+
+  fetchProductDetails(id: number): void {
+    this.spinner.show();
+    this.errorMessage = null;
+    this.product = null;
+
+    this.productService.getProductById(id).pipe(
+      catchError(err => {
+        this.errorMessage = 'Failed to load details for this product. It may have been removed or does not exist.';
+        return of({ success: false, data: null as unknown as Product });
+      }),
+      finalize(() => {
+        this.spinner.hide();
+        this.cdr.markForCheck();
+      })
+    ).subscribe(res => {
+      if (res.success && res.data) {
+        this.product = res.data;
+      }
+    });
+  }
+
+  retryFetch(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam) {
+      this.fetchProductDetails(+idParam);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.paramSub) {
+      this.paramSub.unsubscribe();
+    }
+  }
 }

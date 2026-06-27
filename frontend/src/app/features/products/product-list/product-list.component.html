@@ -1,0 +1,70 @@
+<!-- Loading Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="false">
+  <p style="color: white; font-weight: 500;">Loading Catalog...</p>
+</ngx-spinner>
+
+<div class="container py-5">
+  
+  <!-- Header Title Summary -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+      <h1 class="fw-bold font-outfit text-main mb-1">Explore Products</h1>
+      <p class="text-muted-custom mb-0">Browse fresh, handcrafted bouquets and delicious bakery items.</p>
+    </div>
+    <!-- Refresh Button -->
+    <button (click)="loadCatalog(true)" class="btn btn-outline-secondary btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;" title="Refresh Catalog">
+      <span class="material-icons">refresh</span>
+    </button>
+  </div>
+
+  <!-- Search & Category Chip Filter Toolbar -->
+  <div class="row g-3 mb-5 align-items-center">
+    <div class="col-lg-6 col-md-5">
+      <app-product-search (search)="onSearch($event)"></app-product-search>
+    </div>
+    
+    <div class="col-lg-6 col-md-7">
+      <div class="d-flex gap-2 flex-wrap justify-content-md-end">
+        @for (cat of categories; track cat) {
+          <button (click)="onCategorySelect(cat)" class="btn rounded-pill px-3 py-1.5 fw-semibold font-outfit btn-filter" [ngClass]="{
+            'btn-primary-custom': selectedCategory() === cat,
+            'btn-outline-secondary': selectedCategory() !== cat
+          }">
+            {{ cat === 'ALL' ? 'All Items' : cat }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Alerts State -->
+  @if (errorMessage) {
+    <div class="alert alert-danger p-4 text-center border-0 shadow-sm rounded-3 mb-5" role="alert">
+      <span class="material-icons display-4 text-danger mb-2">cloud_off</span>
+      <h4 class="fw-bold mb-2">Connection Problem</h4>
+      <p class="mb-3">{{ errorMessage }}</p>
+      <button (click)="loadCatalog(true)" class="btn custom-btn btn-sm">Try Again</button>
+    </div>
+  } @else {
+    
+    <!-- Main Listing Grid -->
+    @if (filteredProducts.length > 0) {
+      <div class="row g-4">
+        @for (prod of filteredProducts; track trackByProductId) {
+          <div class="col-lg-3 col-md-4 col-sm-6">
+            <app-product-card [product]="prod" [searchKeyword]="searchKeyword()"></app-product-card>
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Reusable Empty State Card -->
+      <app-empty-state 
+        icon="search_off" 
+        title="No Products Match Your Search" 
+        description="Try adjusting your keyword filter or switching category tabs."
+        actionText="Reset Filters"
+        (action)="onCategorySelect('ALL')">
+      </app-empty-state>
+    }
+  }
+</div>
