@@ -1,0 +1,45 @@
+.hero-banner {
+  min-height: 480px;
+  position: relative;
+  background: linear-gradient(135deg, #d81b60 0%, #8e24aa 100%);
+  background-size: cover;
+  background-position: center;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(142, 36, 170, 0.15);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 0;
+}
+
+.max-width-600 {
+  max-width: 600px;
+}
+
+.text-primary-color {
+  color: var(--primary-color) !important;
+}
+
+.small-icon {
+  font-size: 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.prod-img-placeholder {
+  transition: transform 0.5s ease;
+}
+
+.card-theme:hover {
+  .prod-img-placeholder {
+    transform: scale(1.05);
+  }
+}

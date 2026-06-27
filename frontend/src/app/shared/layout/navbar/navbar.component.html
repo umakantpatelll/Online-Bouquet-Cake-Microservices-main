@@ -1,0 +1,60 @@
+<mat-toolbar class="navbar-toolbar shadow-sm border-bottom border-light-subtle">
+  <div class="container d-flex justify-content-between align-items-center">
+    
+    <!-- Brand / Logo -->
+    <a routerLink="/" class="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
+      <span class="material-icons brand-icon">cake</span>
+      <span class="brand-text font-outfit fw-bold">Bouquet & Cake</span>
+    </a>
+
+    <!-- Desktop Navigation Links -->
+    <div class="d-none d-md-flex align-items-center gap-4">
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-link-custom text-decoration-none">Home</a>
+      <a routerLink="/products" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Products</a>
+      <a routerLink="/cart" routerLinkActive="active-link" class="nav-link-custom text-decoration-none position-relative">
+        Cart
+        <span class="badge rounded-pill bg-danger border border-white position-absolute top-0 start-100 translate-middle-y ms-1">3</span>
+      </a>
+      <a routerLink="/orders" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Orders</a>
+      <a routerLink="/admin" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Admin</a>
+      <a routerLink="/profile" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Profile</a>
+    </div>
+
+    <!-- Right-side actions (Theme toggle + Auth state) -->
+    <div class="d-flex align-items-center gap-3">
+      
+      <!-- Theme Switcher Button -->
+      <button mat-icon-button (click)="toggleTheme()" aria-label="Toggle theme mode" class="theme-toggle-btn">
+        <span class="material-icons">
+          {{ themeService.theme() === 'light' ? 'dark_mode' : 'light_mode' }}
+        </span>
+      </button>
+
+      <!-- User Auth State links -->
+      <div class="d-none d-md-flex align-items-center gap-2">
+        <a routerLink="/auth/login" class="btn custom-btn-outline btn-sm">Sign In</a>
+      </div>
+
+      <!-- Mobile Sidenav Toggle -->
+      <button mat-icon-button (click)="toggleMobileMenu()" class="d-md-none text-main" aria-label="Toggle navigation menu">
+        <span class="material-icons">{{ isMobileMenuOpen() ? 'close' : 'menu' }}</span>
+      </button>
+    </div>
+  </div>
+</mat-toolbar>
+
+<!-- Mobile Navigation Menu -->
+<div class="mobile-menu d-md-none shadow" [ngClass]="{ 'open': isMobileMenuOpen() }">
+  <div class="container py-3 d-flex flex-column gap-3">
+    <a routerLink="/" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Home</a>
+    <a routerLink="/products" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Products</a>
+    <a routerLink="/cart" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Cart (3)</a>
+    <a routerLink="/orders" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Orders</a>
+    <a routerLink="/admin" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Admin</a>
+    <a routerLink="/profile" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Profile</a>
+    <div class="d-flex flex-column gap-2 mt-3">
+      <a routerLink="/auth/login" (click)="toggleMobileMenu()" class="btn custom-btn-outline w-100 py-2">Sign In</a>
+      <a routerLink="/auth/register" (click)="toggleMobileMenu()" class="btn custom-btn w-100 py-2">Register</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,94 @@
+.navbar-toolbar {
+  background-color: var(--card-bg) !important;
+  color: var(--text-main) !important;
+  height: 70px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.brand-icon {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.brand-text {
+  color: var(--text-main);
+  font-size: 1.4rem;
+  letter-spacing: -0.5px;
+}
+
+.nav-link-custom {
+  color: var(--text-main);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 6px 0;
+  position: relative;
+  transition: color var(--transition-speed) ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: width var(--transition-speed) ease;
+  }
+
+  &:hover {
+    color: var(--primary-color);
+    &::after {
+      width: 100%;
+    }
+  }
+}
+
+.active-link {
+  color: var(--primary-color) !important;
+  &::after {
+    width: 100% !important;
+  }
+}
+
+.theme-toggle-btn {
+  color: var(--text-main);
+}
+
+// Mobile Menu Layout & Animation
+.mobile-menu {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 999;
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1), 
+              opacity var(--transition-speed) ease, 
+              visibility var(--transition-speed) ease;
+
+  &.open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.mobile-nav-link {
+  color: var(--text-main);
+  font-weight: 500;
+  display: block;
+  transition: color var(--transition-speed) ease;
+
+  &:hover {
+    color: var(--primary-color);
+  }
+}
