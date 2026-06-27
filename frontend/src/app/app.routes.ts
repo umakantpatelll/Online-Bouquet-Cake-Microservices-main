@@ -82,10 +82,47 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
+    loadComponent: () => import('./features/admin/admin-layout.component').then(m => m.AdminLayoutComponent),
     canActivate: [authGuard, roleGuard],
     data: { expectedRole: 'ROLE_ADMIN' },
-    title: 'Admin Dashboard'
+    title: 'Admin Panel',
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
+        title: 'Admin Dashboard'
+      },
+      {
+        path: 'products',
+        loadComponent: () => import('./features/admin/products/product-list.component').then(m => m.ProductListComponent),
+        title: 'Manage Products'
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./features/admin/orders/admin-order-list.component').then(m => m.AdminOrderListComponent),
+        title: 'Manage Orders'
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/admin/users/user-list.component').then(m => m.UserListComponent),
+        title: 'Manage Users'
+      },
+      {
+        path: 'payments',
+        loadComponent: () => import('./features/admin/payments/payment-list.component').then(m => m.AdminPaymentListComponent),
+        title: 'Payment Settlements'
+      },
+      {
+        path: 'deliveries',
+        loadComponent: () => import('./features/admin/deliveries/delivery-list.component').then(m => m.DeliveryListComponent),
+        title: 'Delivery Logistics'
+      }
+    ]
   },
   {
     path: 'unauthorized',

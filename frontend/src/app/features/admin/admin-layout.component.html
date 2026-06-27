@@ -1,0 +1,51 @@
+<div class="d-flex min-vh-100 flex-column flex-md-row">
+  
+  <!-- Sidebar Panel -->
+  <aside class="bg-dark text-white p-3 d-flex flex-column" style="min-width: 250px;">
+    <div class="text-center py-4 border-bottom border-secondary mb-4">
+      <span class="material-icons display-6 text-primary-color mb-2">admin_panel_settings</span>
+      <h2 class="h5 fw-bold font-outfit mb-0">Management Portal</h2>
+      <span class="badge bg-secondary-subtle text-secondary px-2.5 py-1 text-uppercase text-xs mt-2 font-outfit">ROLE_ADMIN</span>
+    </div>
+
+    <!-- Navigation links -->
+    <nav class="d-flex flex-column gap-2 flex-grow-1">
+      <a routerLink="/admin/dashboard" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">dashboard</span>
+        <span class="font-outfit text-sm">Dashboard</span>
+      </a>
+      <a routerLink="/admin/products" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">inventory</span>
+        <span class="font-outfit text-sm">Products</span>
+      </a>
+      <a routerLink="/admin/orders" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">receipt_long</span>
+        <span class="font-outfit text-sm">Orders</span>
+      </a>
+      <a routerLink="/admin/users" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">people</span>
+        <span class="font-outfit text-sm">Users</span>
+      </a>
+      <a routerLink="/admin/payments" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">payments</span>
+        <span class="font-outfit text-sm">Payments</span>
+      </a>
+      <a routerLink="/admin/deliveries" routerLinkActive="active-link" class="nav-sidebar-link text-decoration-none d-flex align-items-center gap-3 px-3 py-2.5 rounded text-white-50">
+        <span class="material-icons">local_shipping</span>
+        <span class="font-outfit text-sm">Deliveries</span>
+      </a>
+    </nav>
+    
+    <div class="border-top border-secondary pt-3 mt-auto">
+      <a routerLink="/" class="btn btn-outline-light btn-sm w-100 font-outfit py-2">
+        <i class="bi bi-house me-1"></i> Customer View
+      </a>
+    </div>
+  </aside>
+
+  <!-- Child view viewport outlet -->
+  <main class="flex-grow-1 bg-light p-4 p-md-5 overflow-auto">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

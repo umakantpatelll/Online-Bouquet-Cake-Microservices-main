@@ -1,0 +1,149 @@
+<!-- Loading Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="false">
+  <p style="color: white; font-weight: 500;">Loading Admin Metrics...</p>
+</ngx-spinner>
+
+<div class="mb-4">
+  <h1 class="fw-bold font-outfit text-main mb-1">Admin Dashboard Overview</h1>
+  <p class="text-muted-custom">Monitor revenue trends, sales ratios, pending packages, and customer logs.</p>
+</div>
+
+@if (errorMessage()) {
+  <div class="alert alert-danger p-4 text-center border-0 shadow-sm rounded-3 mb-5" role="alert">
+    <span class="material-icons display-4 text-danger mb-2">cloud_off</span>
+    <h4 class="fw-bold mb-2">Connection Problem</h4>
+    <p class="mb-3">{{ errorMessage() }}</p>
+    <button (click)="loadAdminMetricsData()" class="btn custom-btn btn-sm">Retry Load</button>
+  </div>
+} @else {
+  
+  <!-- Operations Stats Cards Grid -->
+  <div class="row g-4 mb-5">
+    <!-- Total Revenue -->
+    <div class="col-lg-3 col-sm-6">
+      <div class="card card-theme border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center gap-3">
+        <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+          <span class="material-icons">monetization_on</span>
+        </div>
+        <div>
+          <span class="text-muted-custom small d-block">Gross Revenue</span>
+          <strong class="fs-4 text-main font-outfit">₹{{ totalRevenue() | number:'1.2-2' }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Orders -->
+    <div class="col-lg-3 col-sm-6">
+      <div class="card card-theme border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center gap-3">
+        <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+          <span class="material-icons">hourglass_empty</span>
+        </div>
+        <div>
+          <span class="text-muted-custom small d-block">Pending Shipments</span>
+          <strong class="fs-4 text-main font-outfit">{{ pendingOrders() }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Orders -->
+    <div class="col-lg-3 col-sm-6">
+      <div class="card card-theme border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center gap-3">
+        <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+          <span class="material-icons">task_alt</span>
+        </div>
+        <div>
+          <span class="text-muted-custom small d-block">Delivered Orders</span>
+          <strong class="fs-4 text-main font-outfit">{{ completedOrders() }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catalog Count -->
+    <div class="col-lg-3 col-sm-6">
+      <div class="card card-theme border-0 shadow-sm p-4 h-100 d-flex flex-row align-items-center gap-3">
+        <div class="bg-info bg-opacity-10 text-info rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+          <span class="material-icons">inventory_2</span>
+        </div>
+        <div>
+          <span class="text-muted-custom small d-block">Catalog Items</span>
+          <strong class="fs-4 text-main font-outfit">{{ catalogCount() }} Items</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analytics row -->
+  <div class="row g-4 mb-5">
+    <div class="col-lg-8">
+      <div class="card card-theme border-0 shadow-sm p-4 h-100">
+        <h3 class="h5 fw-bold text-main font-outfit mb-4 border-bottom pb-2">Monthly Sales Revenue</h3>
+        <div class="chart-wrapper" style="height: 300px; position: relative;">
+          <canvas #revenueChart></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="card card-theme border-0 shadow-sm p-4 h-100">
+        <h3 class="h5 fw-bold text-main font-outfit mb-4 border-bottom pb-2">Store Metrics Summary</h3>
+        <div class="d-flex flex-column gap-3.5 mt-2">
+          <div class="d-flex justify-content-between align-items-center small">
+            <span class="text-muted-custom">Total Orders Logged</span>
+            <span class="fw-bold text-dark">{{ totalOrders() }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center small">
+            <span class="text-muted-custom">Completed Shipments</span>
+            <span class="text-success fw-bold">{{ completedOrders() }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center small">
+            <span class="text-muted-custom">Cancelled Sales</span>
+            <span class="text-danger fw-bold">{{ cancelledOrders() }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center small">
+            <span class="text-muted-custom">Active Catalog Products</span>
+            <span class="fw-bold text-dark">{{ catalogCount() }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent orders row -->
+  <div class="card card-theme border-0 shadow-sm p-4">
+    <h3 class="h5 fw-bold text-main font-outfit mb-4 border-bottom pb-2">Latest Order Entries</h3>
+    
+    @if (recentOrders().length === 0) {
+      <div class="text-center py-5">
+        <span class="material-icons display-4 text-muted opacity-25 mb-3">receipt_long</span>
+        <h4 class="fw-bold font-outfit mb-0">No Orders Placed Yet</h4>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr class="text-muted-custom small">
+              <th>Order ID</th>
+              <th>Customer ID</th>
+              <th>Placed Date</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of recentOrders(); track order.id) {
+              <tr>
+                <td class="fw-bold text-main font-outfit">#{{ order.id }}</td>
+                <td class="text-main">#{{ order.customerId }}</td>
+                <td class="small text-muted-custom">{{ order.createdAt | date:'medium' }}</td>
+                <td class="fw-semibold text-main">₹{{ order.totalPrice | number:'1.2-2' }}</td>
+                <td>
+                  <app-order-status-chip [status]="order.status"></app-order-status-chip>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+}

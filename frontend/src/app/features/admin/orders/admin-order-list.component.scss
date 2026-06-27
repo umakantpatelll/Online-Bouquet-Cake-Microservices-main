@@ -1,0 +1,23 @@
+.text-primary-color {
+  color: var(--primary-color) !important;
+}
+
+.text-muted-custom {
+  color: var(--text-muted) !important;
+}
+
+.text-main {
+  color: var(--text-main) !important;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+tr.mat-mdc-header-row {
+  height: 56px !important;
+}
+
+tr.mat-mdc-row {
+  height: 64px !important;
+}

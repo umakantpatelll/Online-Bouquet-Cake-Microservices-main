@@ -1,0 +1,41 @@
+<h2 mat-dialog-title class="fw-bold font-outfit text-main border-bottom pb-2">
+  Update Order #{{ data.order.id }} Status
+</h2>
+
+<form [formGroup]="statusForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="py-3 d-flex flex-column gap-3" style="min-width: 400px;">
+    
+    <!-- Order Current Summary info -->
+    <div class="alert alert-info py-2.5 small mb-2 text-dark border-0">
+      Placed by Customer #{{ data.order.customerId }} for <strong>₹{{ data.order.totalPrice | number:'1.2-2' }}</strong>.
+    </div>
+
+    <!-- Status select -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Shipment Delivery Status</mat-label>
+      <mat-select formControlName="status">
+        @for (opt of statusOptions; track opt) {
+          <mat-option [value]="opt">{{ opt.replace('_', ' ') }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Courier Staff select -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Assign Delivery Courier Staff</mat-label>
+      <mat-select formControlName="courierStaffId">
+        @for (staff of staffOptions; track staff.id) {
+          <mat-option [value]="staff.id">{{ staff.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="border-top pt-2">
+    <button type="button" mat-button mat-dialog-close>Cancel</button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="statusForm.invalid">
+      Save Status Details
+    </button>
+  </mat-dialog-actions>
+</form>

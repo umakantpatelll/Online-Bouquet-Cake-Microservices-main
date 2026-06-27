@@ -1,0 +1,26 @@
+.text-primary-color {
+  color: var(--primary-color) !important;
+}
+
+.text-xs {
+  font-size: 0.72rem;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+.nav-sidebar-link {
+  transition: all var(--transition-speed) ease;
+  
+  &:hover {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  &.active-link {
+    color: white !important;
+    background-color: var(--primary-color) !important;
+    font-weight: 600;
+  }
+}

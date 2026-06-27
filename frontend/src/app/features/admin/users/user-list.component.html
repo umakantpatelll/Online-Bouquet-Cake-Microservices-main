@@ -1,0 +1,106 @@
+<div class="mb-4">
+  <h1 class="fw-bold font-outfit text-main mb-1">User Directory Management</h1>
+  <p class="text-muted-custom">Manage customer profiles, staff credentials, order counts, and system privileges.</p>
+</div>
+
+<!-- Filters Toolbar -->
+<div class="row g-3 mb-4 align-items-center bg-white p-3 rounded border border-light-subtle shadow-sm">
+  <div class="col-md-7">
+    <input type="text" [(ngModel)]="searchText" (ngModelChange)="applyFilters()" placeholder="Search by name or email address..." class="form-control font-outfit">
+  </div>
+  <div class="col-md-5">
+    <select [(ngModel)]="selectedRole" (change)="applyFilters()" class="form-select font-outfit">
+      <option value="ALL">All Roles</option>
+      <option value="ROLE_CUSTOMER">Customers</option>
+      <option value="ROLE_ADMIN">Administrators</option>
+      <option value="ROLE_DELIVERY">Delivery Staff</option>
+    </select>
+  </div>
+</div>
+
+<!-- Paginated Table Card -->
+<div class="card card-theme border-0 shadow-sm overflow-hidden">
+  <div class="table-responsive">
+    <table mat-table [dataSource]="dataSource" matSort class="w-100 table-hover align-middle">
+      
+      <!-- ID -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>User ID</th>
+        <td mat-cell *matCellDef="let row" class="fw-bold text-main font-outfit">#{{ row.id }}</td>
+      </ng-container>
+
+      <!-- Name -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Full Name</th>
+        <td mat-cell *matCellDef="let row" class="fw-semibold text-main">{{ row.name }}</td>
+      </ng-container>
+
+      <!-- Email -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Email Address</th>
+        <td mat-cell *matCellDef="let row" class="text-muted-custom small">{{ row.email }}</td>
+      </ng-container>
+
+      <!-- Role -->
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>System Role</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="badge px-3 py-1.5 rounded-pill text-uppercase text-xs" [ngClass]="{
+            'bg-danger-subtle text-danger': row.role === 'ROLE_ADMIN',
+            'bg-primary-subtle text-primary': row.role === 'ROLE_CUSTOMER',
+            'bg-secondary-subtle text-secondary': row.role === 'ROLE_DELIVERY'
+          }">
+            {{ row.role.replace('ROLE_', '') }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Total Orders -->
+      <ng-container matColumnDef="totalOrders">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Orders Count</th>
+        <td mat-cell *matCellDef="let row" class="text-center font-outfit text-main">{{ row.totalOrders }}</td>
+      </ng-container>
+
+      <!-- Total Spent -->
+      <ng-container matColumnDef="totalSpent">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Contribution</th>
+        <td mat-cell *matCellDef="let row" class="fw-bold text-main">₹{{ row.totalSpent | number:'1.2-2' }}</td>
+      </ng-container>
+
+      <!-- Status -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="badge px-2.5 py-1 text-uppercase text-xs rounded-pill" [ngClass]="row.isActive ? 'bg-success text-white' : 'bg-secondary text-white'">
+            {{ row.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="text-end px-3">Actions</th>
+        <td mat-cell *matCellDef="let row" class="text-end px-3">
+          <button (click)="toggleUserStatus(row)" class="btn btn-sm rounded-pill font-outfit px-3" [ngClass]="row.isActive ? 'btn-outline-danger' : 'btn-outline-success'">
+            {{ row.isActive ? 'Deactivate' : 'Activate' }}
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Row definitions -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-light"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="border-bottom border-light-subtle"></tr>
+
+      <!-- Row displayed when no data matches search filter -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell text-center p-5" colspan="8">
+          <span class="material-icons display-4 text-muted opacity-25 mb-2">search_off</span>
+          <h5 class="fw-bold font-outfit mb-0">No matching user accounts located</h5>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+  
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="border-top border-light-subtle"></mat-paginator>
+</div>

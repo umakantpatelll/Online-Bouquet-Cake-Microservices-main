@@ -1,0 +1,100 @@
+<div class="mb-4">
+  <h1 class="fw-bold font-outfit text-main mb-1">Delivery Logistics Management</h1>
+  <p class="text-muted-custom">Monitor shipping statuses, courier coordinates, and staff assignments.</p>
+</div>
+
+<!-- Filters Toolbar -->
+<div class="row g-3 mb-4 align-items-center bg-white p-3 rounded border border-light-subtle shadow-sm">
+  <div class="col-md-7">
+    <input type="text" [(ngModel)]="searchText" (ngModelChange)="applyFilters()" placeholder="Search by Address, Staff or Order ID..." class="form-control font-outfit">
+  </div>
+  <div class="col-md-5">
+    <select [(ngModel)]="selectedStatus" (change)="applyFilters()" class="form-select font-outfit">
+      <option value="ALL">All Delivery Statuses</option>
+      <option value="PENDING">Pending</option>
+      <option value="PREPARING">Preparing</option>
+      <option value="OUT_FOR_DELIVERY">Out For Delivery</option>
+      <option value="DELIVERED">Delivered</option>
+    </select>
+  </div>
+</div>
+
+<!-- Paginated Table Card -->
+<div class="card card-theme border-0 shadow-sm overflow-hidden">
+  <div class="table-responsive">
+    <table mat-table [dataSource]="dataSource" matSort class="w-100 table-hover align-middle">
+      
+      <!-- Delivery ID -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Delivery ID</th>
+        <td mat-cell *matCellDef="let row" class="fw-bold text-main font-outfit">#{{ row.id }}</td>
+      </ng-container>
+
+      <!-- Order ID -->
+      <ng-container matColumnDef="orderId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Order ID</th>
+        <td mat-cell *matCellDef="let row" class="fw-semibold text-main">#{{ row.orderId }}</td>
+      </ng-container>
+
+      <!-- Address -->
+      <ng-container matColumnDef="deliveryAddress">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Shipping Address</th>
+        <td mat-cell *matCellDef="let row" class="small text-main" style="max-width: 250px;">{{ row.deliveryAddress }}</td>
+      </ng-container>
+
+      <!-- Courier staff -->
+      <ng-container matColumnDef="courierStaff">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Courier Staff</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="badge bg-light border text-dark px-3 py-1.5 text-uppercase fw-semibold font-outfit text-xs">
+            {{ row.courierStaff }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Status -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="badge px-3 py-1.5 rounded-pill text-uppercase text-xs" [ngClass]="{
+            'bg-success text-white': row.status === 'DELIVERED',
+            'bg-warning text-dark': row.status === 'PENDING' || row.status === 'PREPARING',
+            'bg-info text-white': row.status === 'OUT_FOR_DELIVERY'
+          }">
+            {{ row.status.replace('_', ' ') }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="text-end px-3">Actions</th>
+        <td mat-cell *matCellDef="let row" class="text-end px-3">
+          <div class="d-flex justify-content-end gap-2">
+            <button (click)="assignCourier(row)" class="btn btn-outline-secondary btn-sm rounded-pill px-3 font-outfit">
+              Assign Staff
+            </button>
+            <button (click)="markDelivered(row)" class="btn btn-outline-success btn-sm rounded-pill px-3 font-outfit" [disabled]="row.status === 'DELIVERED'">
+              Hand Over
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Row definitions -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-light"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="border-bottom border-light-subtle"></tr>
+
+      <!-- Row displayed when no data matches search filter -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell text-center p-5" colspan="6">
+          <span class="material-icons display-4 text-muted opacity-25 mb-2">search_off</span>
+          <h5 class="fw-bold font-outfit mb-0">No matching deliveries located</h5>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+  
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="border-top border-light-subtle"></mat-paginator>
+</div>

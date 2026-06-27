@@ -1,0 +1,66 @@
+<h2 mat-dialog-title class="fw-bold font-outfit text-main border-bottom pb-2">
+  {{ isEditMode ? 'Edit Catalog Product' : 'Add New Product' }}
+</h2>
+
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="py-3 d-flex flex-column gap-2" style="min-width: 420px; max-height: 70vh;">
+    <!-- Name -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Product Title / Name</mat-label>
+      <input matInput type="text" formControlName="name" placeholder="e.g. Vanilla Rose Cake">
+      <mat-error *ngIf="f['name'].errors?.['required']">Product Title is required.</mat-error>
+      <mat-error *ngIf="f['name'].errors?.['whitespace']">Whitespace only is not allowed.</mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="2" placeholder="Describe item ingredients, size, and design details"></textarea>
+      <mat-error *ngIf="f['description'].errors?.['required']">Description is required.</mat-error>
+    </mat-form-field>
+
+    <!-- Row Price & Stock -->
+    <div class="row g-2">
+      <div class="col-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Price (INR)</mat-label>
+          <input matInput type="number" formControlName="price" placeholder="499">
+          <mat-error *ngIf="f['price'].errors?.['required']">Price is required.</mat-error>
+          <mat-error *ngIf="f['price'].errors?.['min']">Must be at least 1 INR.</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Stock Level</mat-label>
+          <input matInput type="number" formControlName="stock" placeholder="25">
+          <mat-error *ngIf="f['stock'].errors?.['required']">Stock level is required.</mat-error>
+          <mat-error *ngIf="f['stock'].errors?.['min']">Must be 0 or more.</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Row Category -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Product Category</mat-label>
+      <mat-select formControlName="category">
+        @for (cat of categories; track cat) {
+          <mat-option [value]="cat">{{ cat }}</mat-option>
+        }
+      </mat-select>
+      <mat-error *ngIf="f['category'].errors?.['required']">Category is required.</mat-error>
+    </mat-form-field>
+
+    <!-- Image URL -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Thumbnail Image URL (Optional)</mat-label>
+      <input matInput type="text" formControlName="imageUrl" placeholder="https://example.com/image.jpg">
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="border-top pt-2">
+    <button type="button" mat-button mat-dialog-close>Cancel</button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="productForm.invalid">
+      {{ isEditMode ? 'Save Changes' : 'Create Product' }}
+    </button>
+  </mat-dialog-actions>
+</form>
