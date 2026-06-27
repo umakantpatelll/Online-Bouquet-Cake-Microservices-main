@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+import { STORAGE_KEYS } from '../constants/app.constants';
 
 /**
  * StorageService
  * ----------------------------------------------------
  * Why this file exists:
  * Wraps browser localStorage/sessionStorage queries safely, preventing crashes during SSR (Server Side Rendering) or mock checks.
+ * 
+ * Best Practices:
+ * Encapsulates the keys inside constants and provides type-safe abstractions for token and user objects.
  */
 @Injectable({
   providedIn: 'root'
@@ -51,5 +55,31 @@ export class StorageService {
     } catch (e) {
       console.error('Error clearing localStorage', e);
     }
+  }
+
+  // Token helper methods
+  setToken(token: string): void {
+    this.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+  }
+
+  getToken(): string | null {
+    return this.getItem<string>(STORAGE_KEYS.AUTH_TOKEN);
+  }
+
+  removeToken(): void {
+    this.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+  }
+
+  // User helper methods
+  setUser(user: any): void {
+    this.setItem(STORAGE_KEYS.USER_PROFILE, user);
+  }
+
+  getUser<T>(): T | null {
+    return this.getItem<T>(STORAGE_KEYS.USER_PROFILE);
+  }
+
+  removeUser(): void {
+    this.removeItem(STORAGE_KEYS.USER_PROFILE);
   }
 }

@@ -1,46 +1,96 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { CustomValidators } from '../../../core/utilities/custom-validators';
 
 /**
  * RegisterComponent
  * ----------------------------------------------------
  * Why this file exists:
- * Form boundary for registering a new customer or admin user.
+ * Form registry boundary for new customers or admin users.
+ * 
+ * Form validation:
+ * - Checks password complexity.
+ * - Asserts cross-field equality between password and confirmPassword.
  */
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
-    <div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-      <div class="card card-theme p-4 shadow-sm" style="max-width: 480px; width: 100%;">
-        <h2 class="text-center fw-bold font-outfit mb-3">Create Account</h2>
-        <p class="text-center text-muted-custom mb-4">Join us to explore and order premium cakes and bouquets.</p>
-        <div class="alert alert-info py-2" role="alert">
-          <i class="bi bi-info-circle-fill"></i> Auth registration logic will be integrated in Phase 11.
-        </div>
-        <form>
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Full Name</label>
-            <input type="text" class="form-control" placeholder="John Doe" disabled>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Email address</label>
-            <input type="email" class="form-control" placeholder="name@example.com" disabled>
-          </div>
-          <div class="mb-4">
-            <label class="form-label fw-semibold">Password</label>
-            <input type="password" class="form-control" placeholder="••••••••" disabled>
-          </div>
-          <button type="submit" class="btn custom-btn w-100 py-2 mb-3" disabled>Register</button>
-        </form>
-        <div class="text-center mt-3">
-          <span class="text-muted-custom">Already have an account?</span>
-          <a routerLink="/auth/login" class="btn btn-link text-primary-color text-decoration-none fw-semibold p-0 ms-1">Sign In</a>
-        </div>
-      </div>
-    </div>
-  `
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    NgxSpinnerModule
+  ],
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {}
+export class RegisterComponent {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private spinner = inject(NgxSpinnerService);
+  private router = inject(Router);
+
+  registerForm: FormGroup;
+  hidePassword = signal(true);
+  hideConfirmPassword = signal(true);
+
+  constructor() {
+    this.registerForm = this.fb.group({
+      name: ['', [Validators.required, CustomValidators.noWhitespace]],
+      email: ['', [Validators.required, Validators.email, CustomValidators.noWhitespace]],
+      password: ['', [Validators.required, CustomValidators.passwordStrength()]],
+      confirmPassword: ['', [Validators.required]],
+      role: ['ROLE_CUSTOMER', [Validators.required]]
+    }, {
+      validators: [CustomValidators.mustMatch('password', 'confirmPassword')]
+    });
+  }
+
+  get f() { return this.registerForm.controls; }
+
+  togglePasswordVisibility(): void {
+    this.hidePassword.update(val => !val);
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.hideConfirmPassword.update(val => !val);
+  }
+
+  onSubmit(): void {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    this.spinner.show();
+    const registerPayload = this.registerForm.value;
+
+    this.authService.register(registerPayload).subscribe({
+      next: (res) => {
+        this.spinner.hide();
+        this.notificationService.showSuccess(res.message || 'Registration Successful', 'Registration Success');
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this.spinner.hide();
+        // Errors are already handled by global errorInterceptor
+      }
+    });
+  }
+}

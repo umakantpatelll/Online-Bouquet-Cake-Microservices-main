@@ -7,17 +7,27 @@
       <span class="brand-text font-outfit fw-bold">Bouquet & Cake</span>
     </a>
 
-    <!-- Desktop Navigation Links -->
+    <!-- Desktop Navigation Links (Conditional) -->
     <div class="d-none d-md-flex align-items-center gap-4">
       <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-link-custom text-decoration-none">Home</a>
       <a routerLink="/products" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Products</a>
-      <a routerLink="/cart" routerLinkActive="active-link" class="nav-link-custom text-decoration-none position-relative">
-        Cart
-        <span class="badge rounded-pill bg-danger border border-white position-absolute top-0 start-100 translate-middle-y ms-1">3</span>
-      </a>
-      <a routerLink="/orders" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Orders</a>
-      <a routerLink="/admin" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Admin</a>
-      <a routerLink="/profile" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Profile</a>
+      
+      <!-- Customer Only Links -->
+      <ng-container *ngIf="(authService.isLoggedIn$ | async) && (authService.userRole$ | async) === 'ROLE_CUSTOMER'">
+        <a routerLink="/cart" routerLinkActive="active-link" class="nav-link-custom text-decoration-none position-relative">
+          Cart
+          <span class="badge rounded-pill bg-danger border border-white position-absolute top-0 start-100 translate-middle-y ms-1">3</span>
+        </a>
+        <a routerLink="/orders" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Orders</a>
+      </ng-container>
+
+      <!-- Admin Only Links -->
+      <ng-container *ngIf="(authService.isLoggedIn$ | async) && (authService.userRole$ | async) === 'ROLE_ADMIN'">
+        <a routerLink="/admin" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Admin</a>
+      </ng-container>
+
+      <!-- Common Logged In Link -->
+      <a *ngIf="authService.isLoggedIn$ | async" routerLink="/profile" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Profile</a>
     </div>
 
     <!-- Right-side actions (Theme toggle + Auth state) -->
@@ -32,7 +42,13 @@
 
       <!-- User Auth State links -->
       <div class="d-none d-md-flex align-items-center gap-2">
-        <a routerLink="/auth/login" class="btn custom-btn-outline btn-sm">Sign In</a>
+        <ng-container *ngIf="authService.isLoggedIn$ | async; else guestActions">
+          <span class="text-main fw-semibold me-2">Hi, {{ (authService.currentUser$ | async)?.name }}</span>
+          <button (click)="onLogout()" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</button>
+        </ng-container>
+        <ng-template #guestActions>
+          <a routerLink="/auth/login" class="btn custom-btn btn-sm px-4">Sign In</a>
+        </ng-template>
       </div>
 
       <!-- Mobile Sidenav Toggle -->
@@ -48,13 +64,30 @@
   <div class="container py-3 d-flex flex-column gap-3">
     <a routerLink="/" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Home</a>
     <a routerLink="/products" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Products</a>
-    <a routerLink="/cart" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Cart (3)</a>
-    <a routerLink="/orders" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Orders</a>
-    <a routerLink="/admin" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Admin</a>
-    <a routerLink="/profile" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Profile</a>
+    
+    <!-- Customer Only -->
+    <ng-container *ngIf="(authService.isLoggedIn$ | async) && (authService.userRole$ | async) === 'ROLE_CUSTOMER'">
+      <a routerLink="/cart" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Cart (3)</a>
+      <a routerLink="/orders" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Orders</a>
+    </ng-container>
+    
+    <!-- Admin Only -->
+    <ng-container *ngIf="(authService.isLoggedIn$ | async) && (authService.userRole$ | async) === 'ROLE_ADMIN'">
+      <a routerLink="/admin" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Admin Dashboard</a>
+    </ng-container>
+
+    <!-- Profile -->
+    <a *ngIf="authService.isLoggedIn$ | async" routerLink="/profile" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Profile</a>
+
     <div class="d-flex flex-column gap-2 mt-3">
-      <a routerLink="/auth/login" (click)="toggleMobileMenu()" class="btn custom-btn-outline w-100 py-2">Sign In</a>
-      <a routerLink="/auth/register" (click)="toggleMobileMenu()" class="btn custom-btn w-100 py-2">Register</a>
+      <ng-container *ngIf="authService.isLoggedIn$ | async; else mobileGuestActions">
+        <div class="text-center text-main fw-bold mb-2">Logged in as {{ (authService.currentUser$ | async)?.name }}</div>
+        <button (click)="onLogout()" class="btn btn-danger w-100 py-2">Logout</button>
+      </ng-container>
+      <ng-template #mobileGuestActions>
+        <a routerLink="/auth/login" (click)="toggleMobileMenu()" class="btn custom-btn w-100 py-2">Sign In</a>
+        <a routerLink="/auth/register" (click)="toggleMobileMenu()" class="btn custom-btn-outline w-100 py-2">Register</a>
+      </ng-template>
     </div>
   </div>
 </div>
