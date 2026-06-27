@@ -1,0 +1,52 @@
+.timeline-container {
+  overflow-x: auto;
+}
+
+.step-circle {
+  background-color: var(--text-muted);
+  color: white;
+}
+
+.timeline-step {
+  &.completed {
+    .step-circle {
+      background-color: var(--primary-color);
+    }
+    .text-main {
+      color: var(--primary-color) !important;
+    }
+  }
+
+  &.active {
+    .step-circle {
+      background-color: var(--primary-color);
+      transform: scale(1.15);
+      box-shadow: 0 0 0 6px rgba(var(--primary-color-rgb, 13, 110, 253), 0.2) !important;
+    }
+  }
+
+  &.cancelled-step {
+    .step-circle {
+      background-color: #dc3545 !important;
+    }
+    .text-main {
+      color: #dc3545 !important;
+    }
+  }
+}
+
+.desktop-line-connector {
+  z-index: 1;
+}
+
+.text-muted-custom {
+  color: var(--text-muted) !important;
+}
+
+.text-main {
+  color: var(--text-main) !important;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}

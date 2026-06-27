@@ -1,88 +1,130 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { finalize } from 'rxjs/operators';
+import { OrderService } from '../../../core/services/order.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { OrderResponse } from '../../../core/models/checkout.model';
+import { OrderStatusChipComponent } from '../../../shared/components/order-status/order-status-chip.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 /**
  * OrderListComponent
  * ----------------------------------------------------
  * Why this file exists:
- * Lists the customer's previous and current order history.
+ * Displays user order tracking rows, enabling customers to filter, sort, 
+ * and track order details.
  */
 @Component({
   selector: 'app-order-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
-    <div class="container py-5">
-      <h1 class="fw-bold font-outfit text-main mb-4">Your Orders</h1>
-      
-      <div class="d-flex flex-column gap-4">
-        @for (order of orders(); track order.id) {
-          <div class="card card-theme shadow-sm p-4">
-            <div class="d-flex justify-content-between align-items-center flex-wrap border-bottom pb-3 mb-3 gap-3">
-              <div>
-                <span class="text-muted-custom">Order Date:</span>
-                <span class="fw-semibold ms-2">{{ order.date }}</span>
-              </div>
-              <div>
-                <span class="text-muted-custom">Order Status:</span>
-                <span class="badge ms-2 px-3 py-2 text-uppercase fw-semibold" [ngClass]="{
-                  'bg-warning-subtle text-warning': order.status === 'PENDING',
-                  'bg-success-subtle text-success': order.status === 'CONFIRMED' || order.status === 'DELIVERED',
-                  'bg-info-subtle text-info': order.status === 'OUT_FOR_DELIVERY'
-                }">
-                  {{ order.status }}
-                </span>
-              </div>
-            </div>
-            
-            <div class="d-flex flex-column gap-2 mb-3">
-              @for (item of order.items; track item.id) {
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="d-flex align-items-center gap-2">
-                    <span class="material-icons text-primary-color fs-5">{{ item.category === 'CAKE' ? 'cake' : 'local_florist' }}</span>
-                    <span>{{ item.name }} (x{{ item.quantity }})</span>
-                  </div>
-                  <span class="fw-semibold">₹{{ (item.price * item.quantity) | number:'1.2-2' }}</span>
-                </div>
-              }
-            </div>
-            
-            <div class="border-top pt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-              <div>
-                <span class="text-muted-custom">Order ID:</span>
-                <span class="fw-bold ms-2">#{{ order.id }}</span>
-              </div>
-              <div>
-                <span class="text-muted-custom">Total Paid:</span>
-                <span class="fw-bold fs-5 text-primary-color ms-2">₹{{ order.total | number:'1.2-2' }}</span>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  `
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    OrderStatusChipComponent,
+    EmptyStateComponent,
+    NgxSpinnerModule
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './order-list.component.html',
+  styleUrls: ['./order-list.component.scss']
 })
-export class OrderListComponent {
-  orders = signal([
-    {
-      id: 15,
-      date: '2026-06-26T16:38:54',
-      status: 'PENDING',
-      total: 1350.00,
-      items: [
-        { id: 1, name: 'Chocolate Truffle Cake', category: 'CAKE', price: 450.00, quantity: 3 }
-      ]
-    },
-    {
-      id: 12,
-      date: '2026-06-25T11:48:32',
-      status: 'DELIVERED',
-      total: 1100.00,
-      items: [
-        { id: 2, name: 'Elegance Red Roses Bouquet', category: 'BOUQUET', price: 550.00, quantity: 2 }
-      ]
+export class OrderListComponent implements OnInit {
+  private orderService = inject(OrderService);
+  private authService = inject(AuthService);
+  private spinner = inject(NgxSpinnerService);
+  private cdr = inject(ChangeDetectorRef);
+
+  orders: OrderResponse[] = [];
+  filteredOrders: OrderResponse[] = [];
+  errorMessage: string | null = null;
+
+  // Filter & Search bindings
+  searchText = '';
+  selectedStatus = 'ALL';
+  selectedSort = 'NEWEST';
+
+  // Status categories list
+  statusOptions = ['ALL', 'PENDING', 'CONFIRMED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'];
+
+  ngOnInit(): void {
+    this.fetchOrders();
+  }
+
+  fetchOrders(): void {
+    const user = this.authService.currentUserSignal();
+    const userId = user?.id || 1;
+
+    this.spinner.show();
+    this.errorMessage = null;
+
+    this.orderService.getOrdersByUser(userId).pipe(
+      finalize(() => {
+        this.spinner.hide();
+        this.applyFilters();
+        this.cdr.markForCheck();
+      })
+    ).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.orders = res.data;
+        } else {
+          this.errorMessage = 'Failed to load order history.';
+        }
+      },
+      error: () => {
+        this.errorMessage = 'Failed to communicate with gateway.';
+      }
+    });
+  }
+
+  applyFilters(): void {
+    let result = [...this.orders];
+
+    // 1. Text Search (ID or Product Name)
+    const search = this.searchText.toLowerCase().trim();
+    if (search) {
+      result = result.filter(o => {
+        const matchesId = o.id.toString().includes(search);
+        const matchesProduct = o.items.some(item => 
+          item.productName.toLowerCase().includes(search)
+        );
+        return matchesId || matchesProduct;
+      });
     }
-  ]);
+
+    // 2. Status filter
+    if (this.selectedStatus !== 'ALL') {
+      result = result.filter(o => o.status === this.selectedStatus);
+    }
+
+    // 3. Sorting
+    switch (this.selectedSort) {
+      case 'NEWEST':
+        result.sort((a, b) => b.id - a.id);
+        break;
+      case 'OLDEST':
+        result.sort((a, b) => a.id - b.id);
+        break;
+      case 'PRICE_DESC':
+        result.sort((a, b) => b.totalPrice - a.totalPrice);
+        break;
+      case 'PRICE_ASC':
+        result.sort((a, b) => a.totalPrice - b.totalPrice);
+        break;
+    }
+
+    this.filteredOrders = result;
+  }
+
+  onFilterChange(): void {
+    this.applyFilters();
+  }
+
+  trackByOrderId(index: number, order: OrderResponse): number {
+    return order.id;
+  }
 }

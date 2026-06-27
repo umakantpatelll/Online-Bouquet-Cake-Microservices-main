@@ -1,0 +1,131 @@
+<!-- Loading Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="false">
+  <p style="color: white; font-weight: 500;">Loading Order...</p>
+</ngx-spinner>
+
+<div class="container py-5">
+  
+  <!-- Breadcrumb Navigation trail -->
+  <nav *ngIf="order" aria-label="breadcrumb" class="mb-5">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/" class="text-decoration-none text-muted-custom">Home</a></li>
+      <li class="breadcrumb-item"><a routerLink="/orders" class="text-decoration-none text-muted-custom">Orders</a></li>
+      <li class="breadcrumb-item active text-main font-outfit" aria-current="page">Order #{{ order.id }}</li>
+    </ol>
+  </nav>
+
+  @if (errorMessage) {
+    <!-- Connection Failure Warning panel -->
+    <div class="alert alert-danger p-5 text-center border-0 shadow-sm rounded-3" role="alert">
+      <span class="material-icons display-4 text-danger mb-2">cloud_off</span>
+      <h3 class="fw-bold mb-2">Order Not Located</h3>
+      <p class="mb-4 text-muted-custom">{{ errorMessage }}</p>
+      <div class="d-flex justify-content-center gap-3">
+        <button (click)="retryLoad()" class="btn custom-btn btn-sm px-4">Retry</button>
+        <a routerLink="/orders" class="btn custom-btn-outline btn-sm px-4">Back to History</a>
+      </div>
+    </div>
+  } @else {
+    
+    @if (order) {
+      <!-- Main Content Layout Grid -->
+      <div class="row g-5">
+        
+        <!-- Left Side: Order items list & Tracking timeline -->
+        <div class="col-lg-8">
+          
+          <!-- Tracking Timeline Wrapper -->
+          <div class="card card-theme p-4 shadow-sm border-0 mb-4">
+            <h2 class="h5 fw-bold text-main font-outfit mb-4 border-bottom pb-2">Tracking Progress</h2>
+            <app-order-timeline [activeStatus]="order.status"></app-order-timeline>
+          </div>
+
+          <!-- Items Table Summary -->
+          <div class="card card-theme p-4 shadow-sm border-0">
+            <h2 class="h5 fw-bold text-main font-outfit mb-4 border-bottom pb-2">Purchased Items</h2>
+            
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr class="text-muted-custom small">
+                    <th>Product</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-end">Price</th>
+                    <th class="text-end">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of order.items; track item.id) {
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="material-icons text-primary-color fs-5">
+                            {{ item.productName.toLowerCase().includes('cake') ? 'cake' : 'local_florist' }}
+                          </span>
+                          <span class="fw-semibold text-main">{{ item.productName }}</span>
+                        </div>
+                      </td>
+                      <td class="text-center text-main">{{ item.quantity }}</td>
+                      <td class="text-end text-main">₹{{ item.price | number:'1.2-2' }}</td>
+                      <td class="text-end fw-bold text-main">₹{{ (item.price * item.quantity) | number:'1.2-2' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- Right Side: Shipping coordinates & Invoice downloader sidebar -->
+        <div class="col-lg-4">
+          
+          <!-- Details summary card -->
+          <div class="card card-theme p-4 shadow-sm border-0 mb-4 d-flex flex-column gap-3">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+              <h3 class="h6 fw-bold text-main font-outfit mb-0">Delivery Details</h3>
+              <app-order-status-chip [status]="order.status"></app-order-status-chip>
+            </div>
+            
+            <div class="small text-muted-custom d-flex flex-column gap-1">
+              <span class="fw-semibold text-dark">Address:</span>
+              <p class="mb-2 text-dark">{{ order.deliveryAddress || 'N/A' }}</p>
+              <span>Contact Phone: {{ order.contactNumber || 'N/A' }}</span>
+              <span>Placed at: {{ order.createdAt | date:'medium' }}</span>
+            </div>
+
+            <div class="border-top pt-3 d-flex justify-content-center">
+              <app-invoice-button [order]="order"></app-invoice-button>
+            </div>
+          </div>
+
+          <!-- Pricing summary card -->
+          <div class="card card-theme p-4 shadow-sm border-0">
+            <h3 class="h6 fw-bold text-main font-outfit mb-3 border-bottom pb-2">Summary</h3>
+            
+            <div class="d-flex flex-column gap-2 small">
+              <div class="d-flex justify-content-between text-muted-custom">
+                <span>Subtotal</span>
+                <span>₹{{ order.totalPrice | number:'1.2-2' }}</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted-custom">
+                <span>GST Tax (5%)</span>
+                <span>Included</span>
+              </div>
+              <div class="d-flex justify-content-between text-muted-custom">
+                <span>Delivery</span>
+                <span class="text-success fw-bold">FREE</span>
+              </div>
+              <div class="d-flex justify-content-between fw-bold text-main border-top pt-2 mt-1 fs-6">
+                <span>Paid Total</span>
+                <span class="text-primary-color">₹{{ order.totalPrice | number:'1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    }
+  }
+</div>

@@ -27,6 +27,7 @@
       </ng-container>
 
       <!-- Common Logged In Link -->
+      <a *ngIf="authService.isLoggedIn$ | async" routerLink="/dashboard" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Dashboard</a>
       <a *ngIf="authService.isLoggedIn$ | async" routerLink="/profile" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Profile</a>
     </div>
 
@@ -43,7 +44,7 @@
       <!-- User Auth State links -->
       <div class="d-none d-md-flex align-items-center gap-2">
         <ng-container *ngIf="authService.isLoggedIn$ | async; else guestActions">
-          <span class="text-main fw-semibold me-2">Hi, {{ (authService.currentUser$ | async)?.name }}</span>
+          <a routerLink="/dashboard" class="text-main text-decoration-none fw-semibold me-2" title="Go to Dashboard">Hi, {{ (authService.currentUser$ | async)?.name }}</a>
           <button (click)="onLogout()" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</button>
         </ng-container>
         <ng-template #guestActions>

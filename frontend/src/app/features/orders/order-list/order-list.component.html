@@ -1,0 +1,117 @@
+<!-- Loading Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="false">
+  <p style="color: white; font-weight: 500;">Loading History...</p>
+</ngx-spinner>
+
+<div class="container py-5">
+  
+  <!-- Header Title -->
+  <div class="mb-4">
+    <h1 class="fw-bold font-outfit text-main mb-1">Your Orders</h1>
+    <p class="text-muted-custom">Track active shipments, view receipts, and request invoices.</p>
+  </div>
+
+  <!-- Filters Toolbar -->
+  <div class="row g-3 mb-5 align-items-center bg-light p-3 rounded border border-light-subtle">
+    <!-- Text Search input -->
+    <div class="col-md-5">
+      <input type="text" [(ngModel)]="searchText" (ngModelChange)="onFilterChange()" placeholder="Search by Order ID or item..." class="form-control font-outfit">
+    </div>
+
+    <!-- Status Dropdown -->
+    <div class="col-md-3 col-sm-6">
+      <select [(ngModel)]="selectedStatus" (change)="onFilterChange()" class="form-select font-outfit text-uppercase">
+        @for (opt of statusOptions; track opt) {
+          <option [value]="opt">{{ opt === 'ALL' ? 'All Statuses' : opt.replace('_', ' ') }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Sort Dropdown -->
+    <div class="col-md-4 col-sm-6">
+      <select [(ngModel)]="selectedSort" (change)="onFilterChange()" class="form-select font-outfit">
+        <option value="NEWEST">Sort by: Newest First</option>
+        <option value="OLDEST">Sort by: Oldest First</option>
+        <option value="PRICE_DESC">Sort by: Price (High to Low)</option>
+        <option value="PRICE_ASC">Sort by: Price (Low to High)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Error alert panel -->
+  @if (errorMessage) {
+    <div class="alert alert-danger p-4 text-center border-0 shadow-sm rounded-3 mb-5" role="alert">
+      <span class="material-icons display-4 text-danger mb-2">cloud_off</span>
+      <h4 class="fw-bold mb-2">Connection Problem</h4>
+      <p class="mb-3">{{ errorMessage }}</p>
+      <button (click)="fetchOrders()" class="btn custom-btn btn-sm">Try Again</button>
+    </div>
+  } @else {
+    
+    <!-- Orders grid listing -->
+    @if (filteredOrders.length > 0) {
+      <div class="d-flex flex-column gap-4">
+        @for (order of filteredOrders; track trackByOrderId) {
+          <div class="card card-theme shadow-sm p-4 border-0">
+            
+            <!-- Header Section -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap border-bottom pb-3 mb-3 gap-3">
+              <div>
+                <span class="text-muted-custom small">Placed on:</span>
+                <span class="fw-bold text-main ms-2 small">{{ order.createdAt | date:'medium' }}</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <app-order-status-chip [status]="order.status"></app-order-status-chip>
+              </div>
+            </div>
+
+            <!-- Items Loop summary -->
+            <div class="d-flex flex-column gap-3 mb-3">
+              @for (item of order.items; track item.id) {
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="material-icons text-primary-color fs-5">
+                      {{ item.productName.toLowerCase().includes('cake') ? 'cake' : 'local_florist' }}
+                    </span>
+                    <span class="text-main fw-semibold">{{ item.productName }}</span>
+                    <span class="text-muted-custom small">(x{{ item.quantity }})</span>
+                  </div>
+                  <span class="fw-bold text-main">₹{{ (item.price * item.quantity) | number:'1.2-2' }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Footer Details -->
+            <div class="border-top pt-3 mt-2 d-flex justify-content-between align-items-center flex-wrap gap-3">
+              <div class="small">
+                <span class="text-muted-custom">Order ID:</span>
+                <span class="fw-bold text-dark font-outfit ms-1">#{{ order.id }}</span>
+              </div>
+              
+              <div class="d-flex align-items-center gap-4">
+                <div>
+                  <span class="text-muted-custom small">Total Paid:</span>
+                  <span class="fw-bold fs-5 text-primary-color ms-2">₹{{ order.totalPrice | number:'1.2-2' }}</span>
+                </div>
+                
+                <a [routerLink]="['/orders', order.id]" class="btn custom-btn btn-sm px-4">
+                  Track Delivery
+                </a>
+              </div>
+            </div>
+
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Empty state layout -->
+      <app-empty-state
+        icon="receipt_long"
+        title="No Orders Located"
+        description="Try adjusting your status select or keyword search parameters."
+        actionText="Reset Filters"
+        (action)="selectedStatus = 'ALL'; searchText = ''; onFilterChange();">
+      </app-empty-state>
+    }
+  }
+</div>

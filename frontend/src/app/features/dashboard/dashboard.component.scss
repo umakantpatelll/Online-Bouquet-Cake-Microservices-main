@@ -1,0 +1,38 @@
+.text-primary-color {
+  color: var(--primary-color) !important;
+}
+
+.text-muted-custom {
+  color: var(--text-muted) !important;
+}
+
+.text-main {
+  color: var(--text-main) !important;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+.text-xs {
+  font-size: 0.78rem;
+}
+
+.quick-link-card {
+  transition: all var(--transition-speed) ease;
+  border-color: var(--border-color, #e9ecef) !important;
+  
+  &:hover {
+    border-color: var(--primary-color) !important;
+    background-color: rgba(var(--primary-color-rgb, 13, 110, 253), 0.03);
+    
+    .text-muted {
+      color: var(--primary-color) !important;
+    }
+  }
+
+  .text-muted {
+    font-size: 0.9rem;
+    transition: color var(--transition-speed) ease;
+  }
+}

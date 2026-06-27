@@ -9,17 +9,18 @@ import { guestGuard } from './core/guards/guest.guard';
  * Why this file exists:
  * It defines the application's URL paths, maps them to standalone components, 
  * and applies route guards to protect paths.
- * 
- * Guards Registered:
- * 1. guestGuard: Restricts auth pages from logged-in sessions.
- * 2. authGuard: Restricts profile/orders/checkout from anonymous guest actions.
- * 3. roleGuard: Restricts access to Admin module to ROLE_ADMIN role owners only.
  */
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent),
     title: 'Home | Online Bouquet & Cake Ordering'
+  },
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+    canActivate: [authGuard],
+    title: 'User Dashboard'
   },
   {
     path: 'auth/login',
@@ -66,6 +67,12 @@ export const routes: Routes = [
     loadComponent: () => import('./features/orders/order-list/order-list.component').then(m => m.OrderListComponent),
     canActivate: [authGuard],
     title: 'Your Orders'
+  },
+  {
+    path: 'orders/:id',
+    loadComponent: () => import('./features/orders/order-details/order-details.component').then(m => m.OrderDetailsComponent),
+    canActivate: [authGuard],
+    title: 'Order Tracking Details'
   },
   {
     path: 'profile',

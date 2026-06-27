@@ -1,0 +1,33 @@
+<div class="timeline-container py-3">
+  
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-4 position-relative">
+    
+    <!-- Connector bar overlay (Desktop only) -->
+    <div class="desktop-line-connector d-none d-md-block position-absolute start-0 end-0 top-50 translate-middle-y bg-secondary bg-opacity-25" style="height: 4px; z-index: 1;">
+      <div class="connector-progress bg-primary" [style.width.%]="(activeStepIndex / (steps.length - 1)) * 100" style="height: 100%; transition: width 0.5s ease;"></div>
+    </div>
+
+    @for (step of steps; track step.status; let i = $index) {
+      <div class="timeline-step d-flex flex-row flex-md-column align-items-center gap-3 text-center position-relative w-100" style="z-index: 2;" [ngClass]="{
+        'completed': i <= activeStepIndex,
+        'active': i === activeStepIndex,
+        'cancelled-step': isCancelled && i === 1
+      }">
+        
+        <!-- Step Icon Circle indicator -->
+        <div class="step-circle rounded-circle d-flex align-items-center justify-content-center shadow-sm border border-2 border-white" style="width: 54px; height: 54px; transition: all 0.3s ease;">
+          <span class="material-icons text-white fs-4">{{ step.icon }}</span>
+        </div>
+
+        <!-- Step Descriptions -->
+        <div class="step-details text-start text-md-center">
+          <h5 class="fw-bold font-outfit text-main mb-0 small" style="font-size: 0.9rem;">{{ step.label }}</h5>
+          <span class="text-muted-custom d-block" style="font-size: 0.75rem;">{{ step.desc }}</span>
+        </div>
+
+      </div>
+    }
+
+  </div>
+
+</div>
