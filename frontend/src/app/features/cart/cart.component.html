@@ -1,0 +1,57 @@
+<div class="container py-5">
+  <h1 class="fw-bold font-outfit text-main mb-4">Your Shopping Cart</h1>
+
+  <ng-container *ngIf="cartItems$ | async as items">
+    @if (items.length === 0) {
+      <!-- Empty Cart Placeholder -->
+      <app-empty-cart></app-empty-cart>
+    } @else {
+      <!-- Shopping Cart Details Grid -->
+      <div class="row g-4">
+        
+        <!-- Left Panel: Shopping List -->
+        <div class="col-lg-8">
+          <div class="card card-theme shadow-sm p-4 border-0">
+            <h2 class="h5 fw-bold text-main font-outfit mb-4 border-bottom pb-2">
+              Cart Items ({{ items.length }})
+            </h2>
+            
+            <div class="d-flex flex-column gap-2">
+              @for (item of items; track trackByProductId) {
+                <app-cart-item 
+                  [item]="item"
+                  (increase)="onIncrease(item)"
+                  (decrease)="onDecrease(item)"
+                  (remove)="onRemove(item)">
+                </app-cart-item>
+              }
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <a routerLink="/products" class="btn btn-link text-primary-color text-decoration-none fw-bold font-outfit p-0">
+                <i class="bi bi-arrow-left me-1"></i> Continue Shopping
+              </a>
+              <button (click)="cartService.clearCart()" class="btn btn-outline-danger btn-sm rounded-pill px-3 font-outfit">
+                Clear Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel: Order Summary sidebar card -->
+        <div class="col-lg-4">
+          <app-cart-summary
+            [subtotal]="(subtotal$ | async) || 0"
+            [discount]="(discount$ | async) || 0"
+            [appliedCoupon]="appliedCoupon$ | async"
+            [discountPercentage]="(discountPercentage$ | async) || 0"
+            (applyCoupon)="onApplyCoupon($event)"
+            (removeCoupon)="onRemoveCoupon()"
+            (checkout)="onCheckout()">
+          </app-cart-summary>
+        </div>
+
+      </div>
+    }
+  </ng-container>
+</div>

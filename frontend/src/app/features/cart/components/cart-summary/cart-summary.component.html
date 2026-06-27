@@ -1,0 +1,65 @@
+<div class="card card-theme p-4 shadow-sm border-0 position-sticky" style="top: 100px;">
+  <h2 class="h4 fw-bold mb-4 font-outfit text-main border-bottom pb-3">Order Summary</h2>
+  
+  <div class="d-flex flex-column gap-3 mb-4">
+    <!-- Subtotal -->
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="text-muted-custom">Subtotal</span>
+      <span class="fw-semibold text-main">₹{{ subtotal | number:'1.2-2' }}</span>
+    </div>
+
+    <!-- Discount (Conditional) -->
+    <div *ngIf="discount > 0" class="d-flex justify-content-between align-items-center text-success">
+      <span>Promo Discount ({{ discountPercentage }}%)</span>
+      <span class="fw-semibold">-₹{{ discount | number:'1.2-2' }}</span>
+    </div>
+
+    <!-- Tax GST (5%) -->
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="text-muted-custom">GST (5%)</span>
+      <span class="fw-semibold text-main">₹{{ tax | number:'1.2-2' }}</span>
+    </div>
+
+    <!-- Delivery Fee -->
+    <div class="d-flex justify-content-between align-items-center">
+      <span class="text-muted-custom">Delivery Fee</span>
+      <span class="fw-semibold" [ngClass]="{ 'text-success': deliveryFee === 0, 'text-main': deliveryFee > 0 }">
+        {{ deliveryFee === 0 ? 'FREE' : '₹' + (deliveryFee | number:'1.2-2') }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Coupon apply section -->
+  <div class="coupon-section mb-4 p-3 rounded bg-light border border-light-subtle">
+    <div *ngIf="!appliedCoupon; else activeCoupon" class="d-flex gap-2">
+      <input type="text" [(ngModel)]="couponCode" placeholder="Promo Code" class="form-control form-control-sm font-outfit text-uppercase" (keyup.enter)="onApply()">
+      <button (click)="onApply()" class="btn btn-dark btn-sm font-outfit px-3">Apply</button>
+    </div>
+    
+    <ng-template #activeCoupon>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 font-outfit text-sm">
+          <i class="bi bi-tag-fill me-1"></i> {{ appliedCoupon }}
+        </span>
+        <button (click)="removeCoupon.emit()" class="btn btn-link text-danger p-0 font-outfit small text-decoration-none fw-semibold">
+          Remove
+        </button>
+      </div>
+    </ng-template>
+
+    <div class="mt-2 text-muted-custom font-outfit" style="font-size: 0.75rem;">
+      Try: <strong class="text-dark">WELCOME10</strong>, <strong class="text-dark">CAKE20</strong> or <strong class="text-dark">FESTIVE50</strong>
+    </div>
+  </div>
+
+  <!-- Grand Total -->
+  <div class="border-top border-light-subtle pt-4 mb-4 d-flex justify-content-between align-items-center">
+    <span class="fw-bold fs-5 text-main">Estimated Total</span>
+    <span class="fw-bold fs-5 text-primary-color">₹{{ grandTotal | number:'1.2-2' }}</span>
+  </div>
+
+  <!-- Checkout Button -->
+  <button (click)="checkout.emit()" class="btn custom-btn w-100 py-3 shadow-sm" [disabled]="subtotal === 0">
+    Proceed to Checkout
+  </button>
+</div>

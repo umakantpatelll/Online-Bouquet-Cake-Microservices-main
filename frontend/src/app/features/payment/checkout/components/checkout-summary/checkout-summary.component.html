@@ -1,0 +1,34 @@
+<div class="card card-theme p-4 shadow-sm border-0 position-sticky" style="top: 100px;">
+  <h2 class="h5 fw-bold mb-4 font-outfit text-main border-bottom pb-2">Checkout Details</h2>
+  
+  <div class="d-flex flex-column gap-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center small">
+      <span class="text-muted-custom">Cart Subtotal</span>
+      <span class="fw-semibold text-main">₹{{ subtotal | number:'1.2-2' }}</span>
+    </div>
+
+    <div *ngIf="discount > 0" class="d-flex justify-content-between align-items-center text-success small">
+      <span>Coupon Discount</span>
+      <span class="fw-semibold">-₹{{ discount | number:'1.2-2' }}</span>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center small">
+      <span class="text-muted-custom">GST Tax (5%)</span>
+      <span class="fw-semibold text-main">₹{{ tax | number:'1.2-2' }}</span>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center small">
+      <span class="text-muted-custom">Delivery Fee</span>
+      <span class="fw-semibold text-main">{{ deliveryFee === 0 ? 'FREE' : '₹' + (deliveryFee | number:'1.2-2') }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="appliedCoupon" class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 w-100 font-outfit mb-3 text-center">
+    <i class="bi bi-tag-fill me-1"></i> Coupon "{{ appliedCoupon }}" Applied
+  </div>
+
+  <div class="border-top border-light-subtle pt-3 d-flex justify-content-between align-items-center">
+    <span class="fw-bold fs-6 text-main">Total Amount</span>
+    <span class="fw-bold fs-6 text-primary-color">₹{{ grandTotal | number:'1.2-2' }}</span>
+  </div>
+</div>

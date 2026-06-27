@@ -1,0 +1,78 @@
+<form [formGroup]="addressForm" class="row g-3 py-3">
+  <!-- Name -->
+  <div class="col-md-6">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Customer Full Name</mat-label>
+      <input matInput type="text" formControlName="name" placeholder="John Doe">
+      <mat-error *ngIf="f['name'].errors?.['required']">Full Name is required.</mat-error>
+      <mat-error *ngIf="f['name'].errors?.['minlength']">Must be at least 3 characters long.</mat-error>
+      <mat-error *ngIf="f['name'].errors?.['whitespace']">Whitespace only is not allowed.</mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- Phone -->
+  <div class="col-md-6">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>10-Digit Mobile Number</mat-label>
+      <input matInput type="tel" formControlName="phone" placeholder="9876543210">
+      <mat-error *ngIf="f['phone'].errors?.['required']">Mobile number is required.</mat-error>
+      <mat-error *ngIf="f['phone'].errors?.['pattern']">Must be a valid 10-digit number.</mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- Email -->
+  <div class="col-12">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Email Address</mat-label>
+      <input matInput type="email" formControlName="email" placeholder="name@example.com">
+      <mat-error *ngIf="f['email'].errors?.['required']">Email is required.</mat-error>
+      <mat-error *ngIf="f['email'].errors?.['email']">Please enter a valid email address.</mat-error>
+      <mat-error *ngIf="f['email'].errors?.['whitespace']">Whitespace only is not allowed.</mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- Street Address -->
+  <div class="col-12">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Street Address / House No.</mat-label>
+      <textarea matInput formControlName="streetAddress" rows="2" placeholder="Suite, building, floor, street details"></textarea>
+      <mat-error *ngIf="f['streetAddress'].errors?.['required']">Street address is required.</mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- City -->
+  <div class="col-md-4">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>City</mat-label>
+      <input matInput type="text" formControlName="city" placeholder="Mumbai">
+      <mat-error *ngIf="f['city'].errors?.['required']">City is required.</mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- State -->
+  <div class="col-md-4">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>State</mat-label>
+      <input matInput type="text" formControlName="state" placeholder="Maharashtra">
+      <mat-error *ngIf="f['state'].errors?.['required']">State is required.</mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- Pincode -->
+  <div class="col-md-4">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Pincode / ZIP</mat-label>
+      <input matInput type="text" formControlName="pincode" placeholder="400001">
+      <mat-error *ngIf="f['pincode'].errors?.['required']">Pincode is required.</mat-error>
+      <mat-error *ngIf="f['pincode'].errors?.['pattern']">Must be a valid 6-digit number.</mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- Special Instructions -->
+  <div class="col-12">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Delivery Instructions (Optional)</mat-label>
+      <input matInput type="text" formControlName="specialInstructions" placeholder="e.g. Ring bell, Leave with security, etc.">
+    </mat-form-field>
+  </div>
+</form>

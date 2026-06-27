@@ -1,0 +1,39 @@
+<div class="d-flex justify-content-between align-items-center flex-wrap pb-3 mb-3 border-bottom border-light-subtle gap-3">
+  
+  <!-- Product Image & Basic details -->
+  <div class="d-flex align-items-center gap-3">
+    <div class="img-placeholder bg-secondary bg-opacity-25 rounded d-flex align-items-center justify-content-center text-secondary" style="width: 70px; height: 70px;">
+      @if (item.product.imageUrl) {
+        <img [src]="item.product.imageUrl" [alt]="item.product.name" class="img-fluid object-fit-cover w-100 h-100 rounded">
+      } @else {
+        <span class="material-icons fs-2">{{ item.product.category === 'CAKE' ? 'cake' : 'local_florist' }}</span>
+      }
+    </div>
+    
+    <div>
+      <h3 class="h6 fw-bold text-main mb-1 font-outfit">{{ item.product.name }}</h3>
+      <span class="text-muted-custom text-xs">Unit Price: ₹{{ item.product.price | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <!-- Quantity controller & Subtotal values -->
+  <div class="d-flex align-items-center gap-4 ms-auto">
+    <!-- Quantity Counter -->
+    <div class="d-flex align-items-center border border-light-subtle rounded-pill px-2 py-1 bg-light">
+      <button (click)="decrease.emit()" class="btn btn-link p-0 px-2 text-decoration-none fw-bold text-secondary" style="font-size: 1.1rem;" [disabled]="item.quantity <= 1">-</button>
+      <span class="px-2 fw-semibold text-main">{{ item.quantity }}</span>
+      <button (click)="increase.emit()" class="btn btn-link p-0 px-2 text-decoration-none fw-bold text-secondary" style="font-size: 1.1rem;" [disabled]="item.quantity >= item.product.stock">+</button>
+    </div>
+
+    <!-- Row Subtotal -->
+    <div class="text-end" style="min-width: 100px;">
+      <span class="fw-bold fs-6 text-main">₹{{ (item.product.price * item.quantity) | number:'1.2-2' }}</span>
+    </div>
+
+    <!-- Remove Item Button -->
+    <button (click)="remove.emit()" class="btn btn-link text-danger p-0" title="Remove Item">
+      <span class="material-icons">delete</span>
+    </button>
+  </div>
+
+</div>

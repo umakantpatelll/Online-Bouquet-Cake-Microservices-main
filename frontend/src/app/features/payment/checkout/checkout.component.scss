@@ -1,0 +1,18 @@
+.text-main {
+  color: var(--text-main) !important;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+::ng-deep {
+  .checkout-stepper {
+    background: transparent !important;
+    
+    .mat-step-header {
+      padding: 12px 8px !important;
+      border-radius: var(--border-radius-sm);
+    }
+  }
+}

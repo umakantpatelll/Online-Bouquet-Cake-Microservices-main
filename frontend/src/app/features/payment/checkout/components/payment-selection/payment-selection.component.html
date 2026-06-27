@@ -1,0 +1,22 @@
+<div [formGroup]="paymentForm" class="py-3">
+  <h3 class="h5 fw-bold text-main font-outfit mb-3">Choose Payment Method</h3>
+  
+  <mat-radio-group formControlName="paymentMethod" class="d-flex flex-column gap-3">
+    @for (opt of paymentOptions; track opt.value) {
+      <label class="payment-option-card border rounded-3 p-3 d-flex align-items-start gap-3 cursor-pointer transition-all" [ngClass]="{
+        'border-primary bg-primary bg-opacity-5': paymentForm.get('paymentMethod')?.value === opt.value,
+        'border-light-subtle': paymentForm.get('paymentMethod')?.value !== opt.value
+      }">
+        <mat-radio-button [value]="opt.value" class="mt-1"></mat-radio-button>
+        
+        <div class="d-flex align-items-start gap-2">
+          <span class="material-icons text-muted fs-3 mt-0.5">{{ opt.icon }}</span>
+          <div>
+            <span class="fw-bold text-main d-block font-outfit">{{ opt.label }}</span>
+            <span class="text-muted-custom small">{{ opt.desc }}</span>
+          </div>
+        </div>
+      </label>
+    }
+  </mat-radio-group>
+</div>

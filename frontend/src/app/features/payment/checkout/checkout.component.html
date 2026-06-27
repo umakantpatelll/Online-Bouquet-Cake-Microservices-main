@@ -1,0 +1,77 @@
+<!-- Loading Spinner -->
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="ball-scale-multiple" [fullScreen]="true">
+  <p style="color: white; font-weight: 500;">Placing your order...</p>
+</ngx-spinner>
+
+<div class="container py-5">
+  <h1 class="fw-bold font-outfit text-main mb-4">Checkout Process</h1>
+
+  <div class="row g-4">
+    <!-- Left Column: Mat-Stepper Form Steps -->
+    <div class="col-lg-8">
+      <div class="card card-theme border-0 shadow-sm p-4">
+        
+        <mat-stepper linear #stepper class="checkout-stepper">
+          <!-- Step 1: Delivery Location Address -->
+          <mat-step [stepControl]="shippingForm">
+            <ng-template matStepLabel>Delivery Address</ng-template>
+            
+            <app-shipping-address [addressForm]="shippingForm"></app-shipping-address>
+            
+            <div class="d-flex justify-content-end mt-4">
+              <button mat-raised-button color="primary" matStepperNext [disabled]="shippingForm.invalid" class="font-outfit px-4 py-2">
+                Continue to Payment
+              </button>
+            </div>
+          </mat-step>
+
+          <!-- Step 2: Method selection -->
+          <mat-step [stepControl]="paymentForm">
+            <ng-template matStepLabel>Payment Method</ng-template>
+            
+            <app-payment-selection [paymentForm]="paymentForm"></app-payment-selection>
+            
+            <div class="d-flex justify-content-between mt-4">
+              <button mat-button matStepperPrevious class="font-outfit px-3 py-2">Back</button>
+              <button mat-raised-button color="primary" matStepperNext [disabled]="paymentForm.invalid" class="font-outfit px-4 py-2">
+                Review Order
+              </button>
+            </div>
+          </mat-step>
+
+          <!-- Step 3: Complete Recap & Confirm -->
+          <mat-step>
+            <ng-template matStepLabel>Order Review</ng-template>
+            
+            <app-order-review
+              [items]="cartItems"
+              [subtotal]="subtotal"
+              [discount]="discount"
+              [appliedCoupon]="appliedCoupon"
+              [discountPercentage]="discountPercentage"
+              [shippingAddress]="shippingAddress"
+              [paymentMethod]="paymentMethod"
+              [submitDisabled]="shippingForm.invalid || paymentForm.invalid || cartItems.length === 0"
+              (submit)="placeOrder()">
+            </app-order-review>
+            
+            <div class="d-flex justify-content-start mt-4 border-top pt-3">
+              <button mat-button matStepperPrevious class="font-outfit px-3 py-2">Back to Payment</button>
+            </div>
+          </mat-step>
+        </mat-stepper>
+
+      </div>
+    </div>
+
+    <!-- Right Column: Sidebar recaps -->
+    <div class="col-lg-4">
+      <app-checkout-summary
+        [subtotal]="subtotal"
+        [discount]="discount"
+        [appliedCoupon]="appliedCoupon"
+        [discountPercentage]="discountPercentage">
+      </app-checkout-summary>
+    </div>
+  </div>
+</div>

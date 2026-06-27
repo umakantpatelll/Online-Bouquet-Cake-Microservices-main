@@ -16,7 +16,7 @@
       <ng-container *ngIf="(authService.isLoggedIn$ | async) && (authService.userRole$ | async) === 'ROLE_CUSTOMER'">
         <a routerLink="/cart" routerLinkActive="active-link" class="nav-link-custom text-decoration-none position-relative">
           Cart
-          <span class="badge rounded-pill bg-danger border border-white position-absolute top-0 start-100 translate-middle-y ms-1">3</span>
+          <span *ngIf="((cartCount$ | async) || 0) > 0" class="badge rounded-pill bg-danger border border-white position-absolute top-0 start-100 translate-middle-y ms-1">{{ cartCount$ | async }}</span>
         </a>
         <a routerLink="/orders" routerLinkActive="active-link" class="nav-link-custom text-decoration-none">Orders</a>
       </ng-container>
@@ -67,7 +67,7 @@
     
     <!-- Customer Only -->
     <ng-container *ngIf="(authService.isLoggedIn$ | async) && (authService.userRole$ | async) === 'ROLE_CUSTOMER'">
-      <a routerLink="/cart" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Cart (3)</a>
+      <a routerLink="/cart" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Cart ({{ (cartCount$ | async) || 0 }})</a>
       <a routerLink="/orders" (click)="toggleMobileMenu()" class="mobile-nav-link text-decoration-none py-2 border-bottom">Orders</a>
     </ng-container>
     

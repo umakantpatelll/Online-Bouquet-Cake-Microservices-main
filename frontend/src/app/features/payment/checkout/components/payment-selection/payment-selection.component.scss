@@ -1,0 +1,21 @@
+.payment-option-card {
+  cursor: pointer;
+  border-width: 2px !important;
+  transition: all var(--transition-speed) ease;
+  
+  &:hover {
+    border-color: var(--primary-color) !important;
+  }
+}
+
+.text-muted-custom {
+  color: var(--text-muted) !important;
+}
+
+.text-main {
+  color: var(--text-main) !important;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}

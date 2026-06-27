@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ThemeService } from '../../../core/services/theme.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { CartService } from '../../../core/services/cart.service';
 
 /**
  * NavbarComponent
@@ -24,6 +25,7 @@ import { AuthService } from '../../../core/services/auth.service';
 export class NavbarComponent {
   themeService = inject(ThemeService);
   authService = inject(AuthService);
+  cartCount$ = inject(CartService).cartCount$;
   
   isMobileMenuOpen = signal(false);
 
