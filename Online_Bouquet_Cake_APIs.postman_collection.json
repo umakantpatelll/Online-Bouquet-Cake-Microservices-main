@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "7a35e4d2-f67b-402f-b4b1-8bde631620ea",
+		"name": "Online Bouquet & Cake Microservices API Collection",
+		"description": "Postman API Collection to test and verify the complete flow of the Bouquet & Cake ordering system through the API Gateway.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Auth Service - Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Umakant Patel\",\n  \"email\": \"umakant.patel@gmail.com\",\n  \"password\": \"Password123!\",\n  \"role\": \"ROLE_CUSTOMER\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				},
+				"description": "Registers a new customer user (or admin user by changing role to ROLE_ADMIN)."
+			},
+			"response": []
+		},
+		{
+			"name": "2. Auth Service - Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if (jsonData.data && jsonData.data.token) {",
+							"    pm.globals.set(\"jwt_token\", jsonData.data.token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				]
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"shivani.patel@gmail.com\",\n  \"password\": \"Password@123\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				},
+				"description": "Logs in the user and stores the JWT token in global variables."
+			},
+			"response": []
+		},
+		{
+			"name": "3. Product Service - Get All Products",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:9090/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"products"
+					]
+				},
+				"description": "Fetches all products from the catalog database."
+			},
+			"response": []
+		},
+		{
+			"name": "4. Order Service - Place Order",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": 32,\n  \"items\": [\n    {\n      \"productId\": 2,\n      \"quantity\": 2\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"orders"
+					]
+				},
+				"description": "Places an order through OpenFeign client integration with Auth and Product service."
+			},
+			"response": []
+		}
+	]
+}

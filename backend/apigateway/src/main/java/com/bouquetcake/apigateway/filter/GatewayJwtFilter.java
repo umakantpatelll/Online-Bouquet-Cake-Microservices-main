@@ -37,6 +37,10 @@ public class GatewayJwtFilter implements GlobalFilter, Ordered {
         ServerHttpRequest.Builder requestBuilder = request.mutate()
                 .header("X-Correlation-Id", correlationId);
 
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod().name())) {
+            return chain.filter(exchange);
+        }
+
         // 1. Exclude public endpoints
         if (path.equals("/api/auth/register") || path.equals("/api/auth/login")
                 || path.contains("/v3/api-docs") || path.contains("/swagger")

@@ -7,7 +7,7 @@
 export const environment = {
   production: true,
   appName: 'Online Bouquet & Cake Ordering System',
-  apiGatewayUrl: 'https://api.bouquetcake.com', // Production API Gateway URL
+  apiGatewayUrl: 'http://localhost:9090', // Local API Gateway Port
   tokenKey: 'auth_token',                       // Local storage key for storing JWT
   requestTimeout: 15000,                        // Global request timeout in ms
   defaultPageSize: 10
